@@ -6,7 +6,22 @@
     "type": "project",
     "require": {
         "php": "^7.2.5",
-        "laravel/lumen-framework": "^7.0"
+        "laravel/lumen-framework": "^7.0",
+        "illuminate/http": "^7.0",
+        "illuminate/mail": "^7.0",
+        "illuminate/session": "^7.0",
+        "aws/aws-sdk-php-laravel": "~3.0",
+        "barryvdh/laravel-dompdf": "^0.8.6",
+        "darkaonline/swagger-lume": "7.*",
+        "guzzlehttp/guzzle": "^7.3",
+        "league/flysystem-aws-s3-v3": "^2.0",
+        "maatwebsite/excel": "^3.1",
+        "nesbot/carbon": "^2.34",
+        "nordsoftware/lumen-cors": "^3.3",
+        "simplesoftwareio/simple-qrcode": "^2.0",
+        "symfony/serializer": "^5.1",
+        "tishotm/eloquent-ci-relations": "^1.0",
+        "tymon/jwt-auth": "dev-develop"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.9.1",

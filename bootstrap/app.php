@@ -23,9 +23,19 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-// $app->withFacades();
+$app->withFacades();
 
-// $app->withEloquent();
+class_alias('Illuminate\Support\Facades\App', 'App');
+class_alias(Tymon\JWTAuth\Facades\JWTAuth::class, 'JWTAuth');
+class_alias(Maatwebsite\Excel\Facades\Excel::class, 'Excel');
+class_alias(SimpleSoftwareIO\QrCode\Facades\QrCode::class, 'QrCode');
+class_alias(Aws\Laravel\AwsFacade::class, 'AWS');
+
+$app->withEloquent();
+
+$app->configure('swagger-lume');
+$app->configure('dompdf');
+$app->configure('mail');
 
 /*
 |--------------------------------------------------------------------------
@@ -72,13 +82,15 @@ $app->configure('app');
 |
 */
 
-// $app->middleware([
-//     App\Http\Middleware\ExampleMiddleware::class
-// ]);
+$app->middleware([
+    // App\Http\Middleware\ExampleMiddleware::class
+    'Nord\Lumen\Cors\CorsMiddleware',
+]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+$app->routeMiddleware([
+    'auth' => App\Http\Middleware\Authenticate::class,
+    'jwt' => \App\Http\Middleware\JwtMiddleware::class,
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -91,9 +103,19 @@ $app->configure('app');
 |
 */
 
-// $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
+$app->register(Maatwebsite\Excel\ExcelServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+$app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+$app->register(\SwaggerLume\ServiceProvider::class);
+//$app->register(App\Providers\SHAHashServiceProvider::class);
+$app->register(\Barryvdh\DomPDF\ServiceProvider::class);
+//$app->register(Nord\Lumen\Cors\CorsServiceProvider::class);
+$app->register('Nord\Lumen\Cors\CorsServiceProvider');
+$app->register(SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class);
+$app->register(Aws\Laravel\AwsServiceProvider::class);
+$app->register(Illuminate\Mail\MailServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
