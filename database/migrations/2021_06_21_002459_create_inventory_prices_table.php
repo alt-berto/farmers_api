@@ -18,9 +18,9 @@ class CreateInventoryPricesTable extends Migration
             $table->unsignedBigInteger( 'inventory_id' )->nullable( $value = false );
             $table->double( 'price', 10, 2 )->default( 0 );
             $table->double( 'has_tax', 10, 2 )->nullable(  );
+            $table->string( 'note' )->nullable(  );
             $table->boolean( 'is_active' )->default( true );
             $table->boolean('is_deleted')->default( false );
-            $table->string( 'note' )->nullable(  );
             $table->timestamps(  );
             $table->foreign( 'inventory_id' )->references( 'id' )->on( 'inventories' );
         });

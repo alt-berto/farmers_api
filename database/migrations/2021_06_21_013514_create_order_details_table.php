@@ -21,9 +21,9 @@ class CreateOrderDetailsTable extends Migration
             $table->double( 'has_tax', 10, 2 )->nullable(  );
             $table->string( 'unit_measurement' )->nullable(  );
             $table->integer( 'quantity' )->nullable( $value = false )->default( 1 );
+            $table->string( 'note' )->nullable(  );
             $table->boolean( 'is_active' )->default( true );
             $table->boolean( 'is_deleted' )->default( false );
-            $table->string( 'note' )->nullable(  );
             $table->timestamps();
             $table->foreign( 'order_id' )->references( 'id' )->on( 'orders' );
             $table->foreign( 'inventory_price_id' )->references( 'id' )->on( 'inventory_prices' );

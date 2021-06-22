@@ -23,13 +23,13 @@ class CreateInventoriesTable extends Migration
             $table->string( 'include' )->nullable(  );
             $table->string( 'company_name' )->nullable(  );
             $table->string( 'image' )->nullable(  );
-            $table->string( 'clasification' )->nullable(  );
+            $table->string( 'classification' )->nullable(  );
             $table->string( 'code' )->nullable(  );
             $table->string( 'unit_measurement' )->nullable(  );
             $table->integer( 'qmin' )->nullable( $value = false );
             $table->integer( 'qmax' )->nullable( $value = false );
             $table->integer( 'existence' )->nullable( $value = false );
-            $table->integer( 'aviability' )->nullable( $value = false );
+            $table->integer( 'availability' )->nullable( $value = false );
             $table->string( 'note' )->nullable(  );
             $table->boolean( 'is_active' )->default( true );
             $table->boolean( 'is_deleted' )->default( false );

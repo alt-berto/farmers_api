@@ -103,6 +103,7 @@ $app->routeMiddleware([
 |
 */
 
+//$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 $app->register(Maatwebsite\Excel\ExcelServiceProvider::class);
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);

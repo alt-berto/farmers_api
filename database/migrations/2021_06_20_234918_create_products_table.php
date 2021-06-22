@@ -15,6 +15,7 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements( 'id' );
+            $table->unsignedBigInteger( 'category_id' )->nullable(  );
             $table->string( 'name' );
             $table->string( 'description' )->nullable(  );
             $table->string( 'image' )->nullable(  );
@@ -22,6 +23,7 @@ class CreateProductsTable extends Migration
             $table->boolean( 'is_active' )->default( true );
             $table->boolean( 'is_deleted' )->default( false );
             $table->timestamps(  );
+            $table->foreign( 'category_id' )->references( 'id' )->on( 'categories' );
         });
     }
 

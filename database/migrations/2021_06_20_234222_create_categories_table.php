@@ -19,6 +19,7 @@ class CreateCategoriesTable extends Migration
             $table->foreign( 'parent_id' )->references( 'id' )->on( 'categories' );
             $table->integer( 'order' )->nullable(  );
             $table->string( 'name' );
+            $table->string( 'image' )->nullable(  );
             $table->string( 'note' )->nullable(  );
             $table->boolean( 'is_active' )->nullable( $value = false )->default( true );
             $table->boolean( 'is_deleted' )->nullable( $value = false )->default( false );

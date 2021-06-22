@@ -1,0 +1,773 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Farmers API",
+        "contact": {
+            "name": "Piso83 Digital Developer",
+            "email": "alberto@pis83digital.com"
+        },
+        "version": "0.0.1"
+    },
+    "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "User Login",
+                "operationId": "login",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "query",
+                        "description": "Write your username",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "Write your password",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User Login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserSchema"
+                                },
+                                "example": {
+                                    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvbG9naW4iLCJpYXQiOjE1NzkxMzQzMTIsImV4cCI6MTU3OTEzNzkxMiwibmJmIjoxNTc5MTM0MzEyLCJqdGkiOiJaWWhaWnZVd1lBVE9lbDlwIiwic3ViIjoyLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.wU3zGJO1SPWwtwDeRA4amxtkDxySnGdAq301ARSoVQs"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error: Bad request. When required parameters were not supplied."
+                    }
+                }
+            }
+        },
+        "/api/me": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get User Data",
+                "operationId": "me",
+                "responses": {
+                    "200": {
+                        "description": "Get User Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserSchema"
+                                },
+                                "example": {
+                                    "response": {
+                                        "data": {
+                                            "id": "1",
+                                            "name": "Alberto Molina",
+                                            "username": "nmolina",
+                                            "email": "mail@mail.com",
+                                            "address": "San Jose",
+                                            "phone": "72906930",
+                                            "legal_id": "155829822903",
+                                            "occupation": "Developer",
+                                            "is_active": "1",
+                                            "activation_code": "",
+                                            "is_admin": "0",
+                                            "last_login": "0000-00-00 00:00:00",
+                                            "status": "1",
+                                            "usrtype_id": "5",
+                                            "change_pass": "1",
+                                            "created_at": "0000-00-00 00:00:00",
+                                            "updated_at": "0000-00-00 00:00:00"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error: Bad request. When required parameters were not supplied."
+                    },
+                    "401": {
+                        "description": "Check Token"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Close Session",
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "Close Session",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserSchema"
+                                },
+                                "example": {
+                                    "message": "Successfully logged out"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error: Bad request. When required parameters were not supplied."
+                    },
+                    "401": {
+                        "description": "Check Token"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/refresh": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Refresh Access Token",
+                "operationId": "refresh",
+                "responses": {
+                    "200": {
+                        "description": "Refresh Access Token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserSchema"
+                                },
+                                "example": {
+                                    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvYXBpL3JlZnJlc2giLCJpYXQiOjE1ODAzMzM5MzksImV4cCI6MTU4MDMzNzY5NCwibmJmIjoxNTgwMzM0MDk0LCJqdGkiOiJOc1hyVzYwWENsZXYzUWNvIiwic3ViIjoyLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.YUpV3uLbsv49kL5qwPShJsM-9U9AaCnkToBHUd4SNmk",
+                                    "token_type": "bearer",
+                                    "expires_in": 3600
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error: Bad request. When required parameters were not supplied."
+                    },
+                    "401": {
+                        "description": "Check Token"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CategorySchema": {
+                "title": "Category Model",
+                "description": "Category model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the Category"
+                    },
+                    "parent_id": {
+                        "description": "Parent ID"
+                    },
+                    "order": {
+                        "description": "Category Orders"
+                    },
+                    "name": {
+                        "description": "Category Name"
+                    },
+                    "image": {
+                        "description": "Category Image"
+                    },
+                    "note": {
+                        "description": "Observations"
+                    },
+                    "is_active": {
+                        "description": "Is the row active?"
+                    },
+                    "is_deleted": {
+                        "description": "Is the row deleted?"
+                    },
+                    "created_at": {
+                        "description": "Created"
+                    },
+                    "modified_at": {
+                        "description": "Modified"
+                    }
+                },
+                "type": "object"
+            },
+            "CompanySchema": {
+                "title": "Company Model",
+                "description": "Company model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the Company"
+                    },
+                    "identification_type": {
+                        "description": "Identification type"
+                    },
+                    "legal_id": {
+                        "description": "First Name"
+                    },
+                    "name": {
+                        "description": "Company Name"
+                    },
+                    "business_name": {
+                        "description": "Company Business Name"
+                    },
+                    "description": {
+                        "description": "About the Company"
+                    },
+                    "email": {
+                        "description": "Email of the Company"
+                    },
+                    "phone": {
+                        "description": "Phone number of the Company"
+                    },
+                    "country": {
+                        "description": "Company's Country"
+                    },
+                    "province": {
+                        "description": "Company's Province"
+                    },
+                    "canton": {
+                        "description": "Company's Canton"
+                    },
+                    "district": {
+                        "description": "Company's District"
+                    },
+                    "address": {
+                        "description": "Address of the Company"
+                    },
+                    "website": {
+                        "description": "Company Website"
+                    },
+                    "image": {
+                        "description": "Company Image"
+                    },
+                    "note": {
+                        "description": "Observations"
+                    },
+                    "is_active": {
+                        "description": "Is the row active?"
+                    },
+                    "is_deleted": {
+                        "description": "Is the row deleted?"
+                    },
+                    "created_at": {
+                        "description": "Created"
+                    },
+                    "modified_at": {
+                        "description": "Modified"
+                    }
+                },
+                "type": "object"
+            },
+            "InventorySchema": {
+                "title": "Inventory Model",
+                "description": "Inventory model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the Inventory"
+                    },
+                    "product_id": {
+                        "description": "Product ID"
+                    },
+                    "point_id": {
+                        "description": "Point ID"
+                    },
+                    "company_id": {
+                        "description": "Company ID"
+                    },
+                    "name": {
+                        "description": "Inventory Name"
+                    },
+                    "description": {
+                        "description": "About the Item"
+                    },
+                    "company_name": {
+                        "description": "Company that makes the Item"
+                    },
+                    "image": {
+                        "description": "Inventory Image"
+                    },
+                    "classification": {
+                        "description": "Inventory Classification"
+                    },
+                    "code": {
+                        "description": "Inventory Code"
+                    },
+                    "unit_measurement": {
+                        "description": "Unit of Measurement"
+                    },
+                    "qmin": {
+                        "description": "Minimum Capacity"
+                    },
+                    "qmax": {
+                        "description": "Maximum Capacity"
+                    },
+                    "existence": {
+                        "description": "Inventory's existence"
+                    },
+                    "availability": {
+                        "description": "Inventory's availability"
+                    },
+                    "note": {
+                        "description": "Observations"
+                    },
+                    "is_active": {
+                        "description": "Is the row active?"
+                    },
+                    "is_deleted": {
+                        "description": "Is the row deleted?"
+                    },
+                    "created_at": {
+                        "description": "Created"
+                    },
+                    "modified_at": {
+                        "description": "Modified"
+                    }
+                },
+                "type": "object"
+            },
+            "InventoryImageSchema": {
+                "title": "InventoryImage Model",
+                "description": "Inventory Image model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the Inventory Image"
+                    },
+                    "inventory_id": {
+                        "description": "Inventory ID"
+                    },
+                    "is_cover": {
+                        "description": "Is Cover?"
+                    },
+                    "filename": {
+                        "description": "File Name"
+                    },
+                    "name": {
+                        "description": "Image Name"
+                    },
+                    "url": {
+                        "description": "Image URL"
+                    },
+                    "note": {
+                        "description": "Observations"
+                    },
+                    "is_active": {
+                        "description": "Is the row active?"
+                    },
+                    "is_deleted": {
+                        "description": "Is the row deleted?"
+                    },
+                    "created_at": {
+                        "description": "Created"
+                    },
+                    "modified_at": {
+                        "description": "Modified"
+                    }
+                },
+                "type": "object"
+            },
+            "InventoryPriceSchema": {
+                "title": "InventoryPrice Model",
+                "description": "Inventory Price model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the Inventory Price"
+                    },
+                    "inventory_id": {
+                        "description": "Inventory ID"
+                    },
+                    "price": {
+                        "description": "Product Price"
+                    },
+                    "has_tax": {
+                        "description": "Product Tax Percentage"
+                    },
+                    "note": {
+                        "description": "Observations"
+                    },
+                    "is_active": {
+                        "description": "Is the row active?"
+                    },
+                    "is_deleted": {
+                        "description": "Is the row deleted?"
+                    },
+                    "created_at": {
+                        "description": "Created"
+                    },
+                    "modified_at": {
+                        "description": "Modified"
+                    }
+                },
+                "type": "object"
+            },
+            "InventoryTagSchema": {
+                "title": "InventoryTag Model",
+                "description": "Inventory Tag model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the Inventory Tag"
+                    },
+                    "inventory_id": {
+                        "description": "Inventory ID"
+                    },
+                    "tag_id": {
+                        "description": "Tag ID"
+                    },
+                    "note": {
+                        "description": "Observations"
+                    },
+                    "is_active": {
+                        "description": "Is the row active?"
+                    },
+                    "is_deleted": {
+                        "description": "Is the row deleted?"
+                    },
+                    "created_at": {
+                        "description": "Created"
+                    },
+                    "modified_at": {
+                        "description": "Modified"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderSchema": {
+                "title": "Order Model",
+                "description": "Order model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the Order"
+                    },
+                    "client_id": {
+                        "description": "Client ID"
+                    },
+                    "card_info": {
+                        "description": "Card Info"
+                    },
+                    "card_name": {
+                        "description": "Card Name"
+                    },
+                    "last_digit_card": {
+                        "description": "Card Last Digits"
+                    },
+                    "session": {
+                        "description": "User Session"
+                    },
+                    "note": {
+                        "description": "Observations"
+                    },
+                    "state": {
+                        "description": "Order's State"
+                    },
+                    "is_deleted": {
+                        "description": "Is the row deleted?"
+                    },
+                    "created_at": {
+                        "description": "Created"
+                    },
+                    "modified_at": {
+                        "description": "Modified"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderDetailSchema": {
+                "title": "OrderDetail Model",
+                "description": "Order Detail model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the Detail"
+                    },
+                    "order_id": {
+                        "description": "Order ID"
+                    },
+                    "inventory_price_id": {
+                        "description": "Product Price ID"
+                    },
+                    "real_price": {
+                        "description": "Product Price"
+                    },
+                    "has_tax": {
+                        "description": "Product Tax Percentage"
+                    },
+                    "unit_measurement": {
+                        "description": "Product Unit Measurement"
+                    },
+                    "quantity": {
+                        "description": "Quantity"
+                    },
+                    "note": {
+                        "description": "Observations"
+                    },
+                    "is_active": {
+                        "description": "Is the row active?"
+                    },
+                    "is_deleted": {
+                        "description": "Is the row deleted?"
+                    },
+                    "created_at": {
+                        "description": "Created"
+                    },
+                    "modified_at": {
+                        "description": "Modified"
+                    }
+                },
+                "type": "object"
+            },
+            "PointSchema": {
+                "title": "Point Model",
+                "description": "Point model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the Point"
+                    },
+                    "key": {
+                        "description": "Point Key"
+                    },
+                    "value": {
+                        "description": "Point Value"
+                    },
+                    "message": {
+                        "description": "Point Message"
+                    },
+                    "max_uses": {
+                        "description": "How many uses it have"
+                    },
+                    "note": {
+                        "description": "Observations"
+                    },
+                    "is_active": {
+                        "description": "Is the row active?"
+                    },
+                    "is_deleted": {
+                        "description": "Is the row deleted?"
+                    },
+                    "created_at": {
+                        "description": "Created"
+                    },
+                    "modified_at": {
+                        "description": "Modified"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductSchema": {
+                "title": "Product Model",
+                "description": "Product model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the Product"
+                    },
+                    "name": {
+                        "description": "Product Name"
+                    },
+                    "description": {
+                        "description": "Product Description"
+                    },
+                    "image": {
+                        "description": "Product Image"
+                    },
+                    "note": {
+                        "description": "Observations"
+                    },
+                    "is_active": {
+                        "description": "Is the row active?"
+                    },
+                    "is_deleted": {
+                        "description": "Is the row deleted?"
+                    },
+                    "created_at": {
+                        "description": "Created"
+                    },
+                    "modified_at": {
+                        "description": "Modified"
+                    }
+                },
+                "type": "object"
+            },
+            "TagSchema": {
+                "title": "Tag Model",
+                "description": "Tag model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the Tag"
+                    },
+                    "name": {
+                        "description": "Tag Name"
+                    },
+                    "image": {
+                        "description": "Tag Image"
+                    },
+                    "note": {
+                        "description": "Observations"
+                    },
+                    "is_active": {
+                        "description": "Is the row active?"
+                    },
+                    "is_deleted": {
+                        "description": "Is the row deleted?"
+                    },
+                    "created_at": {
+                        "description": "Created"
+                    },
+                    "modified_at": {
+                        "description": "Modified"
+                    }
+                },
+                "type": "object"
+            },
+            "UserSchema": {
+                "title": "User Model",
+                "description": "User model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the Company"
+                    },
+                    "company_id": {
+                        "description": "ID of the user"
+                    },
+                    "first_name": {
+                        "description": "First Name"
+                    },
+                    "last_name": {
+                        "description": "Last Name"
+                    },
+                    "partner_number": {
+                        "description": "Partner Number"
+                    },
+                    "company_name": {
+                        "description": "Company Name"
+                    },
+                    "birthday": {
+                        "description": "User's birthday"
+                    },
+                    "gender": {
+                        "description": "User's Gender"
+                    },
+                    "username": {
+                        "description": "Username of the user"
+                    },
+                    "email": {
+                        "description": "Email of the user"
+                    },
+                    "email_verified_at": {
+                        "description": "Email Verification DateTime"
+                    },
+                    "phone": {
+                        "description": "Phone number of the user"
+                    },
+                    "country": {
+                        "description": "User's Country"
+                    },
+                    "province": {
+                        "description": "User's Province"
+                    },
+                    "canton": {
+                        "description": "User's Canton"
+                    },
+                    "district": {
+                        "description": "User's District"
+                    },
+                    "address": {
+                        "description": "Address of the user"
+                    },
+                    "zip": {
+                        "description": "User's ZIP Code"
+                    },
+                    "points": {
+                        "description": "User Points"
+                    },
+                    "image": {
+                        "description": "Company Image"
+                    },
+                    "note": {
+                        "description": "Observations"
+                    },
+                    "is_admin": {
+                        "description": "Is the user admin?"
+                    },
+                    "is_active": {
+                        "description": "Is the row active?"
+                    },
+                    "is_deleted": {
+                        "description": "Is the row deleted?"
+                    },
+                    "password": {
+                        "description": "Password of the user"
+                    },
+                    "created_at": {
+                        "description": "Created"
+                    },
+                    "modified_at": {
+                        "description": "Modified"
+                    }
+                },
+                "type": "object"
+            },
+            "UserPointSchema": {
+                "title": "UserPoint Model",
+                "description": "User Point model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the User Point"
+                    },
+                    "user_id": {
+                        "description": "User ID"
+                    },
+                    "point_id": {
+                        "description": "Point ID"
+                    },
+                    "note": {
+                        "description": "Observations"
+                    },
+                    "is_active": {
+                        "description": "Is the row active?"
+                    },
+                    "is_deleted": {
+                        "description": "Is the row deleted?"
+                    },
+                    "created_at": {
+                        "description": "Created"
+                    },
+                    "modified_at": {
+                        "description": "Modified"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    }
+}

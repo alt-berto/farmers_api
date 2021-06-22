@@ -15,7 +15,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * 	title="User Model",
  * 	description="User model",
  * 	@OA\Property(
- * 		property="id", description="ID of the user",
+ * 		property="id", description="ID of the Company",
  *      @OA\Schema(type="number", example=1)
  *	),
  * 	@OA\Property(
@@ -28,7 +28,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  *	),
  * 	@OA\Property(
  *  	property="last_name", description="Last Name",
- *      @OA\Schema(type="varchar(60)", example="Néstor Alberto")
+ *      @OA\Schema(type="varchar(60)", example="Molina Moran")
  *	),
  * 	@OA\Property(
  *  	property="partner_number", description="Partner Number",
@@ -91,6 +91,10 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  *      @OA\Schema(type="integer", example=1)
  *	),
  * 	@OA\Property(
+ *   	property="image", description="Company Image",
+ *      @OA\Schema(type="varchar(250)", example="piso83digital.png")
+ *	),
+ * 	@OA\Property(
  *   	property="note", description="Observations",
  *      @OA\Schema(type="varchar", example="Observations...")
  *	),
@@ -151,6 +155,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'zip',
         'address',
         'points',
+        'image',
         'token',
         'is_admin',
         'password',
@@ -161,9 +166,19 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'updated_at',
     ];
 
+    public function company(  )
+    {
+        return $this->belongsTo( Company::class, 'company_id', 'id' );
+    }
+
     public function orders(  )
     {
-        return $this->hasMany( 'App\Order', 'id', 'client_id' );
+        return $this->hasMany( Order::class, 'id', 'client_id' );
+    }
+
+    public function points(  )
+    {
+        return $this->hasMany( UserPoint::class, 'id', 'user_id' );
     }
 
     public function isAdmin(  ) {

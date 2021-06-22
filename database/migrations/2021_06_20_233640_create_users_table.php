@@ -33,6 +33,7 @@ class CreateUsersTable extends Migration
             $table->string( 'address' )->nullable(  );
             $table->string( 'zip', 10 )->nullable(  );
             $table->integer( 'points' )->nullable(  );
+            $table->string( 'image' )->nullable(  );
             $table->string( 'note', 200 )->nullable(  );
             $table->boolean( 'is_admin' )->default( false );
             $table->boolean( 'is_active' )->default( true );
