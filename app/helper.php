@@ -24,3 +24,9 @@ function read_file( $bucket, $keyname ) {
     }
     return '';
 }
+
+// Random String
+function random_string( $size ) {
+    $bytes = random_bytes( $size / 2 );
+    return bin2hex( $bytes );
+}

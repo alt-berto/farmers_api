@@ -22,5 +22,13 @@ Proyecto Elaborado en PHP 7 con Lumen
 * Go to: http://localhost:8000/api/documentation
 
 
+# Configs
+* Copy *.env.example*/ to *.env* file with de database settings.
+* Run $`php artisan migrate` to sycn database tables.
+
+# Seeds
+* Run the following commands to enter data into the database.
+* Run $`php artisan db:seed`
+
 
 The Lumen framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
