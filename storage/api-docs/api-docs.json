@@ -75,24 +75,56 @@
                                 },
                                 "example": {
                                     "response": {
-                                        "data": {
-                                            "id": "1",
-                                            "name": "Alberto Molina",
-                                            "username": "nmolina",
-                                            "email": "mail@mail.com",
-                                            "address": "San Jose",
+                                        "user": {
+                                            "id": 1,
+                                            "company_id": "1",
+                                            "first_name": "Nestor Alberto",
+                                            "last_name": "Molina Moran",
+                                            "partner_number": null,
+                                            "company_name": null,
+                                            "birthday": null,
+                                            "gender": "0",
+                                            "username": "alt_berto",
+                                            "email": "alberto@piso83digital.com",
+                                            "email_verified_at": null,
                                             "phone": "72906930",
-                                            "legal_id": "155829822903",
-                                            "occupation": "Developer",
+                                            "country": null,
+                                            "province": null,
+                                            "canton": null,
+                                            "district": null,
+                                            "address": "Santa Ana, Brasil de Mora.",
+                                            "zip": null,
+                                            "points": null,
+                                            "image": null,
+                                            "note": "Pre-Registro",
+                                            "is_admin": "1",
                                             "is_active": "1",
-                                            "activation_code": "",
-                                            "is_admin": "0",
-                                            "last_login": "0000-00-00 00:00:00",
-                                            "status": "1",
-                                            "usrtype_id": "5",
-                                            "change_pass": "1",
-                                            "created_at": "0000-00-00 00:00:00",
-                                            "updated_at": "0000-00-00 00:00:00"
+                                            "is_deleted": "0",
+                                            "remember_token": null,
+                                            "created_at": "2021-06-30T00:21:57.000000Z",
+                                            "updated_at": "2021-06-30T00:21:57.000000Z",
+                                            "company": {
+                                                "id": 1,
+                                                "identification_type": "01",
+                                                "legal_id": "123456789",
+                                                "name": "Piso 83",
+                                                "business_name": "Piso 83 Digital",
+                                                "description": "",
+                                                "email": "hello@piso83digital.com",
+                                                "phone": "60061983",
+                                                "country": "506",
+                                                "province": null,
+                                                "canton": null,
+                                                "district": null,
+                                                "address": "Santa Jose",
+                                                "website": "https://www.piso83digital.com/",
+                                                "image": "icon-piso833.svg",
+                                                "note": "Pre-Registro",
+                                                "is_active": "1",
+                                                "is_deleted": "0",
+                                                "created_at": "2021-06-30T00:21:57.000000Z",
+                                                "updated_at": "2021-06-30T00:21:57.000000Z"
+                                            }
                                         }
                                     }
                                 }
@@ -176,6 +208,269 @@
                     },
                     "401": {
                         "description": "Check Token"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Sing up User",
+                "operationId": "register",
+                "parameters": [
+                    {
+                        "name": "company_id",
+                        "in": "query",
+                        "description": "Write the company ID",
+                        "required": false,
+                        "style": "form",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "first_name",
+                        "in": "query",
+                        "description": "Write your first name",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "last_name",
+                        "in": "query",
+                        "description": "Write your last name",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Write your email address",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "username",
+                        "in": "query",
+                        "description": "Write your username",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "description": "Write your phone number",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "gender",
+                        "in": "query",
+                        "description": "Write your gender",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "company_name",
+                        "in": "query",
+                        "description": "Write your company name",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "partner_number",
+                        "in": "query",
+                        "description": "Write your partner number",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "birthday",
+                        "in": "query",
+                        "description": "Write your birthday",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "date"
+                        }
+                    },
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "description": "Write your country",
+                        "required": false,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "province",
+                        "in": "query",
+                        "description": "Write your province",
+                        "required": false,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "canton",
+                        "in": "query",
+                        "description": "Write your canton",
+                        "required": false,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "district",
+                        "in": "query",
+                        "description": "Write your district",
+                        "required": false,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "zip",
+                        "in": "query",
+                        "description": "Write your zip code",
+                        "required": false,
+                        "style": "form",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "address",
+                        "in": "query",
+                        "description": "Write your address",
+                        "required": false,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "points",
+                        "in": "query",
+                        "description": "Write the points",
+                        "required": false,
+                        "style": "form",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "image",
+                        "in": "query",
+                        "description": "Write the image name",
+                        "required": false,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "Write your password",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Create User",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserSchema"
+                                },
+                                "example": {
+                                    "response": {
+                                        "user": {
+                                            "id": 1,
+                                            "company_id": "1",
+                                            "first_name": "Nestor Alberto",
+                                            "last_name": "Molina Moran",
+                                            "partner_number": null,
+                                            "company_name": null,
+                                            "birthday": null,
+                                            "gender": "0",
+                                            "username": "alt_berto",
+                                            "email": "alberto@piso83digital.com",
+                                            "email_verified_at": null,
+                                            "phone": "72906930",
+                                            "country": null,
+                                            "province": null,
+                                            "canton": null,
+                                            "district": null,
+                                            "address": "Santa Ana, Brasil de Mora.",
+                                            "zip": null,
+                                            "points": null,
+                                            "image": null,
+                                            "note": "Pre-Registro",
+                                            "is_admin": "1",
+                                            "is_active": "1",
+                                            "is_deleted": "0",
+                                            "remember_token": null,
+                                            "created_at": "2021-06-30T00:21:57.000000Z",
+                                            "updated_at": "2021-06-30T00:21:57.000000Z"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error: Bad request. When required parameters were not supplied."
+                    },
+                    "401": {
+                        "description": "Check Token"
+                    },
+                    "405": {
+                        "description": "Validation exception"
+                    },
+                    "409": {
+                        "description": "Registration Failed"
                     }
                 },
                 "security": [

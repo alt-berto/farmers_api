@@ -141,6 +141,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'company_id',
         'first_name',
         'last_name',
+        'username',
         'email',
         'email_verified_at',
         'phone',

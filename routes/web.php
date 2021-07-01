@@ -14,3 +14,12 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+$router->post( '/api/register', 'AuthController@register');
+$router->post( '/api/login', 'AuthController@login' );
+//
+$router->group( [ 'middleware' => 'jwt', 'prefix' => 'api' ], function(  ) use ( $router ) {
+  //
+  $router->get( '/me', 'AuthController@me' );
+  $router->post( '/logout', 'AuthController@logout' );
+  $router->put( '/refresh', 'AuthController@refresh' );
+} );
