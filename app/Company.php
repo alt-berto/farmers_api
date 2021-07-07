@@ -133,11 +133,11 @@ class Company extends Model
 
     public function users(  )
     {
-        return $this->hasMany( User::class, 'id', 'company_id' );
+        return $this->hasMany( User::class, 'company_id', 'id' );
     }
 
     public function inventories(  )
     {
-        return $this->hasMany( Inventory::class, 'id', 'company_id' );
+        return $this->hasMany( Inventory::class, 'company_id', 'id' );
     }
 }

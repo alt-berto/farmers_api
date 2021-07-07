@@ -174,12 +174,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public function orders(  )
     {
-        return $this->hasMany( Order::class, 'id', 'client_id' );
+        return $this->hasMany( Order::class, 'client_id', 'id' );
     }
 
     public function points(  )
     {
-        return $this->hasMany( UserPoint::class, 'id', 'user_id' );
+        return $this->hasMany( UserPoint::class, 'user_id', 'id' );
     }
 
     public function isAdmin(  ) {

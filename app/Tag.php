@@ -74,6 +74,6 @@ class Tag extends Model
 
     public function products(  )
     {
-        return $this->hasMany( InventoryTag::class, 'id', 'tag_id' );
+        return $this->hasMany( InventoryTag::class, 'tag_id', 'id' );
     }
 }

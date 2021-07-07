@@ -84,11 +84,11 @@ class Point extends Model
 
     public function products(  )
     {
-        return $this->hasMany( Inventory::class, 'id', 'point_id' );
+        return $this->hasMany( Inventory::class, 'point_id', 'id' );
     }
 
     public function users(  )
     {
-        return $this->hasMany( UserPoint::class, 'id', 'point_id' );
+        return $this->hasMany( UserPoint::class, 'point_id', 'id' );
     }
 }

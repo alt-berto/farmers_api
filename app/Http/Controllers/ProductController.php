@@ -339,28 +339,85 @@ class ProductController extends Controller
      *		    ref="#/components/schemas/ProductSchema",
      *          example={"response": {
      *              "data":{
-     *                 "id": 1,
-     *                 "category_id": "3",
-     *                 "name": "PC",
-     *                 "description": "Computadora de uso personal.",
-     *                 "image": "pc.png",
+     *                 "id": 2,
+     *                 "category_id": "4",
+     *                 "name": "Tablet",
+     *                 "description": "Dispositivo movil tactil.",
+     *                 "image": "tablet.png",
      *                 "note": "Pre-Registro",
      *                 "is_active": "1",
      *                 "is_deleted": "0",
      *                 "created_at": "2021-06-30T00:21:57.000000Z",
      *                 "updated_at": "2021-06-30T00:21:57.000000Z",
      *                 "category": {
-     *                     "id": 3,
+     *                     "id": 4,
      *                     "parent_id": "3",
      *                     "order": null,
-     *                     "name": "Laptops",
+     *                     "name": "Tablets",
      *                     "image": "",
      *                     "note": "Pre-Registro",
      *                     "is_active": "1",
      *                     "is_deleted": "0",
      *                     "created_at": "2021-06-30T00:21:57.000000Z",
      *                     "updated_at": "2021-06-30T00:21:57.000000Z"
-     *                 }
+     *                 },
+     *                 "inventories": {
+     *                     "id": 3,
+     *                     "product_id": "2",
+     *                     "point_id": null,
+     *                     "company_id": null,
+     *                     "name": "iPad Pro 2021",
+     *                     "description": "* Chip Apple M1 para un rendimiento de siguiente nivel.<br/>* Impresionante pantalla de retina líquida de 11 pulgadas con promoción, tono verdadero y color ancho P3.<br/>* Sistema de cámara TrueDepth con cámara frontal ultra ancha con escenario central.<b",
+     *                     "include": null,
+     *                     "company_name": "Apple",
+     *                     "image": "ipad.png",
+     *                     "classification": "",
+     *                     "code": null,
+     *                     "unit_measurement": "Unid",
+     *                     "qmin": "10",
+     *                     "qmax": "50",
+     *                     "existence": "10",
+     *                     "availability": "10",
+     *                     "note": "Pre-Registro",
+     *                     "is_active": "1",
+     *                     "is_deleted": "0",
+     *                     "created_at": "2021-06-30T00:21:57.000000Z",
+     *                     "updated_at": "2021-06-30T00:21:57.000000Z",
+     *                     "prices":  {
+     *                          "id": 3,
+     *                          "inventory_id": "3",
+     *                          "price": "35000.00",
+     *                          "has_tax": "0.00",
+     *                          "note": "Pre-Registro",
+     *                          "is_active": "1",
+     *                          "is_deleted": "0",
+     *                          "created_at": "2021-06-30T00:21:57.000000Z",
+     *                          "updated_at": "2021-06-30T00:21:57.000000Z"
+     *                     },
+     *                     "images": {
+     *                          "id": 3,
+     *                          "inventory_id": "3",
+     *                          "is_cover": "1",
+     *                          "filename": "ipad",
+     *                          "name": null,
+     *                          "url": "ipad.png",
+     *                          "note": "Pre-Registro",
+     *                          "is_active": "1",
+     *                          "is_deleted": "0",
+     *                          "created_at": "2021-06-30T00:23:22.000000Z",
+     *                          "updated_at": "2021-06-30T00:23:22.000000Z"
+     *                     },
+     *                     "tags": {
+     *                          "id": 7,
+     *                          "inventory_id": "3",
+     *                          "tag_id": "1",
+     *                          "note": "Pre-Registro",
+     *                          "is_active": "1",
+     *                          "is_deleted": "0",
+     *                          "created_at": "2021-06-30T00:21:57.000000Z",
+     *                          "updated_at": "2021-06-30T00:21:57.000000Z"
+     *                     },
+     *                  },
      *               },
      *             }
      *
@@ -389,7 +446,7 @@ class ProductController extends Controller
     public function show( $id, Request $request )
     {
         //
-        $data = Product::with( 'category' )->where( 'is_active', true )->where( 'is_deleted', false )->where( 'id', $id )->firstOrFail(  );
+        $data = Product::with( 'category' )->with( [ 'inventories.prices', 'inventories.images', 'inventories.tags' ] )->where( 'is_active', true )->where( 'is_deleted', false )->where( 'id', $id )->firstOrFail(  );
 
 		if ( $request->wantsJson(  ) ) {
 			return $data;
@@ -681,9 +738,9 @@ class ProductController extends Controller
      * 	summary="Search a Product",
 	 * 	tags={"Products"},
      * @OA\Parameter(
-     *      name="parent_id",
+     *      name="category_id",
      *      in="query",
-     *      description="Write the parent ID",
+     *      description="Write the Category ID",
      *      required=false,
      *      @OA\Schema(
      *          type="integer",
@@ -717,28 +774,85 @@ class ProductController extends Controller
      *		    ref="#/components/schemas/ProductSchema",
      *           example={"response": {
      *              "data":{
-     *                 "id": 1,
-     *                 "category_id": "3",
-     *                 "name": "PC",
-     *                 "description": "Computadora de uso personal.",
-     *                 "image": "pc.png",
+     *                 "id": 2,
+     *                 "category_id": "4",
+     *                 "name": "Tablet",
+     *                 "description": "Dispositivo movil tactil.",
+     *                 "image": "tablet.png",
      *                 "note": "Pre-Registro",
      *                 "is_active": "1",
      *                 "is_deleted": "0",
      *                 "created_at": "2021-06-30T00:21:57.000000Z",
      *                 "updated_at": "2021-06-30T00:21:57.000000Z",
      *                 "category": {
-     *                     "id": 3,
+     *                     "id": 4,
      *                     "parent_id": "3",
      *                     "order": null,
-     *                     "name": "Laptops",
+     *                     "name": "Tablets",
      *                     "image": "",
      *                     "note": "Pre-Registro",
      *                     "is_active": "1",
      *                     "is_deleted": "0",
      *                     "created_at": "2021-06-30T00:21:57.000000Z",
      *                     "updated_at": "2021-06-30T00:21:57.000000Z"
-     *                 }
+     *                 },
+     *                 "inventories": {
+     *                     "id": 3,
+     *                     "product_id": "2",
+     *                     "point_id": null,
+     *                     "company_id": null,
+     *                     "name": "iPad Pro 2021",
+     *                     "description": "* Chip Apple M1 para un rendimiento de siguiente nivel.<br/>* Impresionante pantalla de retina líquida de 11 pulgadas con promoción, tono verdadero y color ancho P3.<br/>* Sistema de cámara TrueDepth con cámara frontal ultra ancha con escenario central.<b",
+     *                     "include": null,
+     *                     "company_name": "Apple",
+     *                     "image": "ipad.png",
+     *                     "classification": "",
+     *                     "code": null,
+     *                     "unit_measurement": "Unid",
+     *                     "qmin": "10",
+     *                     "qmax": "50",
+     *                     "existence": "10",
+     *                     "availability": "10",
+     *                     "note": "Pre-Registro",
+     *                     "is_active": "1",
+     *                     "is_deleted": "0",
+     *                     "created_at": "2021-06-30T00:21:57.000000Z",
+     *                     "updated_at": "2021-06-30T00:21:57.000000Z",
+     *                     "prices":  {
+     *                          "id": 3,
+     *                          "inventory_id": "3",
+     *                          "price": "35000.00",
+     *                          "has_tax": "0.00",
+     *                          "note": "Pre-Registro",
+     *                          "is_active": "1",
+     *                          "is_deleted": "0",
+     *                          "created_at": "2021-06-30T00:21:57.000000Z",
+     *                          "updated_at": "2021-06-30T00:21:57.000000Z"
+     *                     },
+     *                     "images": {
+     *                          "id": 3,
+     *                          "inventory_id": "3",
+     *                          "is_cover": "1",
+     *                          "filename": "ipad",
+     *                          "name": null,
+     *                          "url": "ipad.png",
+     *                          "note": "Pre-Registro",
+     *                          "is_active": "1",
+     *                          "is_deleted": "0",
+     *                          "created_at": "2021-06-30T00:23:22.000000Z",
+     *                          "updated_at": "2021-06-30T00:23:22.000000Z"
+     *                     },
+     *                     "tags": {
+     *                          "id": 7,
+     *                          "inventory_id": "3",
+     *                          "tag_id": "1",
+     *                          "note": "Pre-Registro",
+     *                          "is_active": "1",
+     *                          "is_deleted": "0",
+     *                          "created_at": "2021-06-30T00:21:57.000000Z",
+     *                          "updated_at": "2021-06-30T00:21:57.000000Z"
+     *                     },
+     *                  },
      *               },
      *               "current_page": 1,
      *               "from": 1,
@@ -778,17 +892,17 @@ class ProductController extends Controller
     {
         //
         $this->validate( $request, [
-            'parent_id' => 'nullable|number',
+            'category_id' => 'nullable|number',
             'name' => 'nullable|string|max:80',
             'pagination' => 'nullable|number'
         ] );
 
-        $products = Product::where( 'is_active', true )->where( 'is_deleted', false );
+        $products = Product::with( 'category' )->with( [ 'inventories.prices', 'inventories.images', 'inventories.tags' ] )->where( 'is_active', true )->where( 'is_deleted', false );
         if ( $request->name ) {
             $products->where( 'name', 'LIKE', "%{$request->name}%" );
         }
-        if ( $request->parent_id ) {
-            $products->where( 'parent_id', $request->parent_id );
+        if ( $request->category_id ) {
+            $products->where( 'category_id', $request->category_id );
         }
         if ( $request->paginate ) {
             return $products->orderBy( 'name', 'ASC' )->paginate( $request->paginate );

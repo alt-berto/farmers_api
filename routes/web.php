@@ -86,4 +86,16 @@ $router->group( [ 'middleware' => 'jwt', 'prefix' => 'api' ], function(  ) use (
   $router->delete( '/products/{id}', 'ProductController@destroy' );
   /*--- Product End ---*/
 
+  /*--- Inventory Begin ---*/
+  $router->get( '/inventories', 'InventoryController@index' );
+  $router->get( '/inventories/list', 'InventoryController@list' );
+  $router->post( '/inventories/search', 'InventoryController@search' );
+  $router->post( '/inventories', 'InventoryController@store' );
+  $router->get( '/inventories/{id}', 'InventoryController@show' );
+  $router->get( '/inventories/{id}/users', 'InventoryController@users' );
+  $router->put( '/inventories/{id}', 'InventoryController@update' );
+  $router->patch( '/inventories/{id}', 'InventoryController@update' );
+  $router->delete( '/inventories/{id}', 'InventoryController@destroy' );
+  /*--- Inventory End ---*/
+
 } );

@@ -141,22 +141,22 @@ class Inventory extends Model
     }
     public function point(  )
     {
-        return $this->belongsTo( Motel::class, 'point_id', 'id' );
+        return $this->belongsTo( Point::class, 'point_id', 'id' );
     }
     public function company(  )
     {
-        return $this->belongsTo( Motel::class, 'company_id', 'id' );
+        return $this->belongsTo( Company::class, 'company_id', 'id' );
     }
     public function prices(  )
     {
-        return $this->hasMany( InventoryPrice::class, 'id', 'inventory_id' );
+        return $this->hasMany( InventoryPrice::class, 'inventory_id', 'id' )->where( 'is_active', true );
     }
     public function images(  )
     {
-        return $this->hasMany( ProductImage::class, 'id', 'inventory_id' );
+        return $this->hasMany( InventoryImage::class, 'inventory_id', 'id' );
     }
     public function tags(  )
     {
-        return $this->hasMany( InventoryTag::class, 'id', 'inventory_id' );
+        return $this->hasMany( InventoryTag::class, 'inventory_id', 'id' );
     }
 }

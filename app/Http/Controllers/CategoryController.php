@@ -783,7 +783,7 @@ class CategoryController extends Controller
             'pagination' => 'nullable|number'
         ] );
 
-        $categories = Category::where( 'is_active', true )->where( 'is_deleted', false );
+        $categories = Category::with( 'parent' )->where( 'is_active', true )->where( 'is_deleted', false );
         if ( $request->name ) {
             $categories->where( 'name', 'LIKE', "%{$request->name}%" );
         }
