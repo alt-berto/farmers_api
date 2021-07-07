@@ -80,7 +80,7 @@ class Product extends Model
 
     public function category(  )
     {
-        return $this->belongsTo( Group::class, 'category_id', 'id' );
+        return $this->belongsTo( Category::class, 'category_id', 'id' );
     }
     public function inventories(  )
     {

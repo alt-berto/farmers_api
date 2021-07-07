@@ -84,7 +84,7 @@ class AuthController extends Controller
         try {
             if ( ! $token = JWTAuth::attempt( $credentials ) ) {
                 //return response()->json(['user_not_found'], 404);
-                return response(  )->json( ['token' => '','error'=> 'credenciales_invalidas'], 400 );
+                return response(  )->json( ['token' => '','message'=> 'credenciales_invalidas'], 400 );
             }
         } catch ( \Tymon\JWTAuth\Exceptions\TokenExpiredException $e ) {
             return response(  )->json( ['token_expiro'], 500 );
@@ -295,7 +295,7 @@ class AuthController extends Controller
      * @OA\POST(
      * 	path="/api/register",
      *  operationId="register",
-     * 	summary="Sing up User",
+     * 	summary="Sing up User, the partner number is: TEST2021",
      * 	tags={"Users"},
      * @OA\Parameter(
      *      name="company_id",
@@ -488,6 +488,16 @@ class AuthController extends Controller
      *      ),
      *      style="form"
      *  ),
+     * *  @OA\Parameter(
+     *      name="password_confirmation",
+     *      in="query",
+     *      description="Write the same password",
+     *      required=true,
+     *      @OA\Schema(
+     *          type="string",
+     *      ),
+     *      style="form"
+     *  ),
      * 	@OA\Response(
      * 		response=201,
      *		description="Create User",
@@ -571,7 +581,7 @@ class AuthController extends Controller
         ]);
 
         if ( $request->input( 'partner_number' ) != env( 'PARTNER_NUMBER' ) ) {
-            return response(  )->json( [ 'Código distribuidor invalido' ], 404 );
+            return response(  )->json( [ 'message' => 'Código distribuidor invalido' ], 404 );
         }
 
         $current_time = new \DateTime(  );
