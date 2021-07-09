@@ -128,7 +128,7 @@ class InventoryController extends Controller
     public function index( Request $request )
     {
         //
-        $data = Inventory::with( [ 'product', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false )->get(  );
+        $data = Inventory::with( [ 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false )->get(  );
 		if ( $request->wantsJson(  ) ) {
 			return $data;
             //return $data->toJson(  );
@@ -249,7 +249,7 @@ class InventoryController extends Controller
     public function list( Request $request )
     {
         //
-        $data = Inventory::with( [ 'product', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false )->paginate( 15 );
+        $data = Inventory::with( [ 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false )->paginate( 15 );
 
 		if ( $request->wantsJson(  ) ) {
 			return $data;
@@ -270,19 +270,29 @@ class InventoryController extends Controller
      * 	summary="Create Inventory Method",
      * 	tags={"Inventories"},
      * @OA\Parameter(
-     *      name="parent_id",
+     *      name="product_id",
      *      in="query",
-     *      description="Write the parent ID",
-     *      required=false,
+     *      description="Write the product ID",
+     *      required=true,
      *      @OA\Schema(
-     *          type="string",
+     *          type="integer",
      *      ),
      *      style="form"
      *  ),
      * @OA\Parameter(
-     *      name="order",
+     *      name="point_id",
      *      in="query",
-     *      description="Write the order number",
+     *      description="Write the point ID",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="integer",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="company_id",
+     *      in="query",
+     *      description="Write the company ID",
      *      required=false,
      *      @OA\Schema(
      *          type="integer",
@@ -300,12 +310,112 @@ class InventoryController extends Controller
      *      style="form"
      *  ),
      * @OA\Parameter(
+     *      name="description",
+     *      in="query",
+     *      description="Write the Inventory's description",
+     *      required=true,
+     *      @OA\Schema(
+     *          type="string",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="include",
+     *      in="query",
+     *      description="Write the Inventory's include",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="string",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="company_name",
+     *      in="query",
+     *      description="Write the comapny's name",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="string",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
      *      name="image",
      *      in="query",
      *      description="Write image's name",
      *      required=false,
      *      @OA\Schema(
      *          type="string",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="classification",
+     *      in="query",
+     *      description="Write Inventory's classification",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="string",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="unit_measurement",
+     *      in="query",
+     *      description="Write unit of measurement",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="string",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="code",
+     *      in="query",
+     *      description="Write Inventory's code",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="string",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="qmin",
+     *      in="query",
+     *      description="Write Inventory's Min Quantity",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="number",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="qmax",
+     *      in="query",
+     *      description="Write Inventory's Max Quantity",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="number",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="existence",
+     *      in="query",
+     *      description="Write Inventory's existence",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="number",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="availability",
+     *      in="query",
+     *      description="Write Inventory's availability",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="number",
      *      ),
      *      style="form"
      *  ),
@@ -424,20 +534,42 @@ class InventoryController extends Controller
     {
         // Validate incoming request
         $this->validate( $request, [
-            'parent_id' => 'nullable|numeric',
-            'order' => 'nullable|numeric',
-            'name' => 'required|string|max:100',
+            'product_id' => 'required|numeric',
+            'point_id' => 'nullable|numeric',
+            'company_id' => 'nullable|numeric',
+            'name' => 'required|string|max:120',
+            'description' => 'required|string|max:250',
+            'include' => 'nullable|string|max:250',
+            'company_name' => 'nullable|string|max:80',
             'image' => 'nullable|string|max:250',
+            'classification' => 'nullable|string|max:100',
+            'unit_measurement' => 'nullable|string|max:40',
+            'code' => 'nullable|string|max:100',
+            'qmin' => 'nullable|numeric',
+            'qmax' => 'nullable|numeric',
+            'existence' => 'nullable|numeric',
+            'availability' => 'nullable|numeric',
             'note' => 'nullable|string|max:250'
         ] );
         $current_time = new \DateTime(  );
         try {
             //
             $in_data = Inventory::create( [
-                'parent_id' => $request->input( 'parent_id' ),
-                'order' => $request->input( 'order' ),
+                'product_id' => $request->input( 'product_id' ),
+                'point_id' => $request->input( 'point_id' ),
+                'company_id' => $request->input( 'company_id' ),
                 'name' => $request->input( 'name' ),
+                'description' => $request->input( 'description' ),
+                'include' => $request->input( 'include' ),
+                'company_name' => $request->input( 'company_name' ),
                 'image' => $request->input( 'image' ),
+                'classification' => $request->input( 'classification' ),
+                'unit_measurement' => $request->input( 'unit_measurement' ),
+                'code' => $request->input( 'code' ),
+                'qmin' => $request->input( 'qmin' ),
+                'qmax' => $request->input( 'qmax' ),
+                'existence' => $request->input( 'existence' ),
+                'availability' => $request->input( 'availability' ),
                 'note' => $request->input( 'note' ),
                 'is_active' => true,
                 'created' => $current_time->format( "Y-m-d H:i:s" ),
@@ -589,7 +721,7 @@ class InventoryController extends Controller
     public function show( $id, Request $request )
     {
         //
-        $data = Inventory::with( [ 'product', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false )->where( 'id', $id )->firstOrFail(  );
+        $data = Inventory::with( [ 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false )->where( 'id', $id )->firstOrFail(  );
 
 		if ( $request->wantsJson(  ) ) {
 			return $data;
@@ -623,19 +755,29 @@ class InventoryController extends Controller
      *      ),
      * ),
      * @OA\Parameter(
-     *      name="parent_id",
+     *      name="product_id",
      *      in="query",
-     *      description="Write the parent ID",
-     *      required=false,
+     *      description="Write the product ID",
+     *      required=true,
      *      @OA\Schema(
-     *          type="string",
+     *          type="integer",
      *      ),
      *      style="form"
      *  ),
      * @OA\Parameter(
-     *      name="order",
+     *      name="point_id",
      *      in="query",
-     *      description="Write the order number",
+     *      description="Write the point ID",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="integer",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="company_id",
+     *      in="query",
+     *      description="Write the company ID",
      *      required=false,
      *      @OA\Schema(
      *          type="integer",
@@ -653,12 +795,112 @@ class InventoryController extends Controller
      *      style="form"
      *  ),
      * @OA\Parameter(
+     *      name="description",
+     *      in="query",
+     *      description="Write the Inventory's description",
+     *      required=true,
+     *      @OA\Schema(
+     *          type="string",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="include",
+     *      in="query",
+     *      description="Write the Inventory's include",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="string",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="company_name",
+     *      in="query",
+     *      description="Write the comapny's name",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="string",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
      *      name="image",
      *      in="query",
      *      description="Write image's name",
      *      required=false,
      *      @OA\Schema(
      *          type="string",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="classification",
+     *      in="query",
+     *      description="Write Inventory's classification",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="string",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="unit_measurement",
+     *      in="query",
+     *      description="Write unit of measurement",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="string",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="code",
+     *      in="query",
+     *      description="Write Inventory's code",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="string",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="qmin",
+     *      in="query",
+     *      description="Write Inventory's Min Quantity",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="number",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="qmax",
+     *      in="query",
+     *      description="Write Inventory's Max Quantity",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="number",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="existence",
+     *      in="query",
+     *      description="Write Inventory's existence",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="number",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="availability",
+     *      in="query",
+     *      description="Write Inventory's availability",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="number",
      *      ),
      *      style="form"
      *  ),
@@ -784,13 +1026,24 @@ class InventoryController extends Controller
     public function update( $id, Request $request )
     {
         //
-        $data = Inventory::with( [ 'product', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'id', $id )->firstOrFail(  );
+        $data = Inventory::with( [ 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'id', $id )->firstOrFail(  );
         // Validate incoming request
         $this->validate( $request, [
-            'parent_id' => 'nullable|numeric',
-            'order' => 'nullable|numeric',
-            'name' => 'required|string|max:100',
+            'product_id' => 'required|numeric',
+            'point_id' => 'nullable|numeric',
+            'company_id' => 'nullable|numeric',
+            'name' => 'required|string|max:120',
+            'description' => 'required|string|max:250',
+            'include' => 'nullable|string|max:250',
+            'company_name' => 'nullable|string|max:80',
             'image' => 'nullable|string|max:250',
+            'classification' => 'nullable|string|max:100',
+            'unit_measurement' => 'nullable|string|max:40',
+            'code' => 'nullable|string|max:100',
+            'qmin' => 'nullable|numeric',
+            'qmax' => 'nullable|numeric',
+            'existence' => 'nullable|numeric',
+            'availability' => 'nullable|numeric',
             'note' => 'nullable|string|max:250'
         ] );
 
@@ -798,10 +1051,21 @@ class InventoryController extends Controller
         try {
 
             $data->fill( [
-                'parent_id' => $request->input( 'parent_id' ),
-                'order' => $request->input( 'order' ),
+                'product_id' => $request->input( 'product_id' ),
+                'point_id' => $request->input( 'point_id' ),
+                'company_id' => $request->input( 'company_id' ),
                 'name' => $request->input( 'name' ),
+                'description' => $request->input( 'description' ),
+                'include' => $request->input( 'include' ),
+                'company_name' => $request->input( 'company_name' ),
                 'image' => $request->input( 'image' ),
+                'classification' => $request->input( 'classification' ),
+                'unit_measurement' => $request->input( 'unit_measurement' ),
+                'code' => $request->input( 'code' ),
+                'qmin' => $request->input( 'qmin' ),
+                'qmax' => $request->input( 'qmax' ),
+                'existence' => $request->input( 'existence' ),
+                'availability' => $request->input( 'availability' ),
                 'note' => $request->input( 'note' ),
                 'is_active' => true,
                 //'created_at' => $current_time->format( "Y-m-d H:i:s" ),
@@ -958,7 +1222,7 @@ class InventoryController extends Controller
     public function destroy( Request $request, $id )
     {
         //
-        $data = Inventory::with( [ 'product', 'point', 'company', 'prices', 'images', 'tags' ] )->findOrFail( $id );
+        $data = Inventory::with( [ 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->findOrFail( $id );
         $data->is_deleted = true;
         $data->save(  );
 
@@ -975,9 +1239,29 @@ class InventoryController extends Controller
      * 	summary="Search a Inventory",
 	 * 	tags={"Inventories"},
      * @OA\Parameter(
-     *      name="parent_id",
+     *      name="product_id",
      *      in="query",
-     *      description="Write the parent ID",
+     *      description="Write the product ID",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="integer",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="company_id",
+     *      in="query",
+     *      description="Write the company ID",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="integer",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="tag_id",
+     *      in="query",
+     *      description="Write the tag ID",
      *      required=false,
      *      @OA\Schema(
      *          type="integer",
@@ -1119,17 +1403,28 @@ class InventoryController extends Controller
     {
         //
         $this->validate( $request, [
-            'parent_id' => 'nullable|number',
+            'product_id' => 'nullable|number',
+            'company_id' => 'nullable|number',
+            'tag_id' => 'nullable|number',
             'name' => 'nullable|string|max:80',
             'pagination' => 'nullable|number'
         ] );
 
-        $inventories = Inventory::with( [ 'product', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false );
+        $inventories = Inventory::with( [ 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false );
         if ( $request->name ) {
-            $inventories->where( 'name', 'LIKE', "%{$request->name}%" );
+            $inventories->where( 'name', 'LIKE', "%{$request->name}%" )->orWhere( 'company_name', 'LIKE', "%{$request->name}%" );
         }
-        if ( $request->parent_id ) {
-            $inventories->where( 'parent_id', $request->parent_id );
+        if ( $request->product_id ) {
+            $inventories->where( 'product_id', $request->product_id );
+        }
+        if ( $request->company_id ) {
+            $inventories->where( 'company_id', $request->company_id );
+        }
+        if ( $request->tag_id ) {
+            $tag_id = $request->tag_id;
+            $inventories->whereHas( 'tags', function ( $query ) use ( $tag_id ) {
+                $query->where( 'tag_id', $tag_id )->where( 'is_active', true )->where( 'is_deleted', false );
+            } );
         }
         if ( $request->paginate ) {
             return $inventories->orderBy( 'name', 'ASC' )->paginate( $request->paginate );

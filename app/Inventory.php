@@ -149,14 +149,14 @@ class Inventory extends Model
     }
     public function prices(  )
     {
-        return $this->hasMany( InventoryPrice::class, 'inventory_id', 'id' )->where( 'is_active', true );
+        return $this->hasMany( InventoryPrice::class, 'inventory_id', 'id' )->where( 'is_active', true )->where( 'is_deleted', false );
     }
     public function images(  )
     {
-        return $this->hasMany( InventoryImage::class, 'inventory_id', 'id' );
+        return $this->hasMany( InventoryImage::class, 'inventory_id', 'id' )->where( 'is_deleted', false );
     }
     public function tags(  )
     {
-        return $this->hasMany( InventoryTag::class, 'inventory_id', 'id' );
+        return $this->hasMany( InventoryTag::class, 'inventory_id', 'id' )->where( 'is_deleted', false );
     }
 }

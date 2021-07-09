@@ -32,7 +32,6 @@ $router->group( [ 'middleware' => 'jwt', 'prefix' => 'api' ], function(  ) use (
   $router->post( '/companies/search', 'CompanyController@search' );
   $router->post( '/companies', 'CompanyController@store' );
   $router->get( '/companies/{id}', 'CompanyController@show' );
-  $router->get( '/companies/{id}/users', 'CompanyController@users' );
   $router->put( '/companies/{id}', 'CompanyController@update' );
   $router->patch( '/companies/{id}', 'CompanyController@update' );
   $router->delete( '/companies/{id}', 'CompanyController@destroy' );
@@ -44,7 +43,6 @@ $router->group( [ 'middleware' => 'jwt', 'prefix' => 'api' ], function(  ) use (
   $router->post( '/categories/search', 'CategoryController@search' );
   $router->post( '/categories', 'CategoryController@store' );
   $router->get( '/categories/{id}', 'CategoryController@show' );
-  $router->get( '/categories/{id}/users', 'CategoryController@users' );
   $router->put( '/categories/{id}', 'CategoryController@update' );
   $router->patch( '/categories/{id}', 'CategoryController@update' );
   $router->delete( '/categories/{id}', 'CategoryController@destroy' );
@@ -56,7 +54,6 @@ $router->group( [ 'middleware' => 'jwt', 'prefix' => 'api' ], function(  ) use (
   $router->post( '/tags/search', 'TagController@search' );
   $router->post( '/tags', 'TagController@store' );
   $router->get( '/tags/{id}', 'TagController@show' );
-  $router->get( '/tags/{id}/users', 'TagController@users' );
   $router->put( '/tags/{id}', 'TagController@update' );
   $router->patch( '/tags/{id}', 'TagController@update' );
   $router->delete( '/tags/{id}', 'TagController@destroy' );
@@ -68,7 +65,6 @@ $router->group( [ 'middleware' => 'jwt', 'prefix' => 'api' ], function(  ) use (
   $router->post( '/points/search', 'PointController@search' );
   $router->post( '/points', 'PointController@store' );
   $router->get( '/points/{id}', 'PointController@show' );
-  $router->get( '/points/{id}/users', 'PointController@users' );
   $router->put( '/points/{id}', 'PointController@update' );
   $router->patch( '/points/{id}', 'PointController@update' );
   $router->delete( '/points/{id}', 'PointController@destroy' );
@@ -80,7 +76,6 @@ $router->group( [ 'middleware' => 'jwt', 'prefix' => 'api' ], function(  ) use (
   $router->post( '/products/search', 'ProductController@search' );
   $router->post( '/products', 'ProductController@store' );
   $router->get( '/products/{id}', 'ProductController@show' );
-  $router->get( '/products/{id}/users', 'ProductController@users' );
   $router->put( '/products/{id}', 'ProductController@update' );
   $router->patch( '/products/{id}', 'ProductController@update' );
   $router->delete( '/products/{id}', 'ProductController@destroy' );
@@ -92,10 +87,59 @@ $router->group( [ 'middleware' => 'jwt', 'prefix' => 'api' ], function(  ) use (
   $router->post( '/inventories/search', 'InventoryController@search' );
   $router->post( '/inventories', 'InventoryController@store' );
   $router->get( '/inventories/{id}', 'InventoryController@show' );
-  $router->get( '/inventories/{id}/users', 'InventoryController@users' );
   $router->put( '/inventories/{id}', 'InventoryController@update' );
   $router->patch( '/inventories/{id}', 'InventoryController@update' );
   $router->delete( '/inventories/{id}', 'InventoryController@destroy' );
   /*--- Inventory End ---*/
+
+  /*--- Inventory Tag Begin ---*/
+  $router->post( '/inventory/tags', 'InventoryTagController@store' );
+  $router->get( '/inventory/tags/{inventory_id}', 'InventoryTagController@show' );
+  $router->delete( '/inventory/tags/{id}', 'InventoryTagController@destroy' );
+  /*--- Inventory Tag End ---*/
+
+  /*--- Inventory Price Begin ---*/
+  $router->post( '/inventory/prices', 'InventoryPriceController@store' );
+  $router->get( '/inventory/prices/{inventory_id}', 'InventoryPriceController@show' );
+  $router->delete( '/inventory/prices/{id}', 'InventoryPriceController@destroy' );
+  /*--- Inventory Price End ---*/
+
+  /*--- User Begin ---*/
+  $router->get( '/users', 'UserController@index' );
+  $router->get( '/users/list', 'UserController@list' );
+  $router->post( '/users/search', 'UserController@search' );
+  $router->post( '/users', 'UserController@store' );
+  $router->get( '/users/{id}', 'UserController@show' );
+  $router->put( '/users/{id}', 'UserController@update' );
+  $router->patch( '/users/{id}', 'UserController@update' );
+  $router->delete( '/users/{id}', 'UserController@destroy' );
+  /*--- User End ---*/
+
+  /*--- User Point Begin ---*/
+  $router->post( '/user/points', 'UserPointController@store' );
+  $router->get( '/user/points/{user_id}', 'UserPointController@show' );
+  $router->get( '/user/points/{user_id}/count', 'UserPointController@count_points' );
+  $router->delete( '/user/points/{id}', 'UserPointController@destroy' );
+  /*--- User Point End ---*/
+
+  /*--- Order Begin ---*/
+  $router->get( '/orders', 'OrderController@index' );
+  $router->get( '/orders/list', 'OrderController@list' );
+  $router->post( '/orders', 'OrderController@store' );
+  $router->get( '/orders/{id}', 'OrderController@show' );
+  $router->get( '/user/orders/{user_id}', 'OrderController@user_orders' );
+  $router->put( '/orders/{id}', 'OrderController@update' );
+  $router->patch( '/orders/{id}', 'OrderController@update' );
+  $router->delete( '/orders/{id}', 'OrderController@destroy' );
+  /*--- Order End ---*/
+
+  /*--- Order Details Begin ---*/
+  $router->post( '/order/details', 'OrderDetailController@store' );
+  $router->get( '/order/{order_id}/details/', 'OrderDetailController@show' );
+  $router->get( '/user/order/details/{user_id}', 'OrderDetailController@user_orders' );
+  $router->put( '/order/details/{id}', 'OrderDetailController@update' );
+  $router->patch( '/order/details/{id}', 'OrderDetailController@update' );
+  $router->delete( '/order/details/{id}', 'OrderDetailController@destroy' );
+  /*--- Order Details End ---*/
 
 } );

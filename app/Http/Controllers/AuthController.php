@@ -488,7 +488,7 @@ class AuthController extends Controller
      *      ),
      *      style="form"
      *  ),
-     * *  @OA\Parameter(
+     * @OA\Parameter(
      *      name="password_confirmation",
      *      in="query",
      *      description="Write the same password",
@@ -554,7 +554,6 @@ class AuthController extends Controller
      *         response=409,
      *         description="Registration Failed"
      *  ),
-     *  security={ {"bearerAuth": {} } }
      * )
      */
     public function register( Request $request ) {
