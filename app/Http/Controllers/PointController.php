@@ -149,7 +149,7 @@ class PointController extends Controller
      * @OA\POST(
      * 	path="/api/points",
      *  operationId="store",
-     * 	summary="Create Tag Method",
+     * 	summary="Create Point Method",
      * 	tags={"Points"},
      * @OA\Parameter(
      *      name="key",
@@ -174,7 +174,7 @@ class PointController extends Controller
      * @OA\Parameter(
      *      name="message",
      *      in="query",
-     *      description="Write the Tag's message",
+     *      description="Write the Point's message",
      *      required=false,
      *      @OA\Schema(
      *          type="string",
@@ -184,7 +184,7 @@ class PointController extends Controller
      * @OA\Parameter(
      *      name="max_uses",
      *      in="query",
-     *      description="Write Tag's uses quantity",
+     *      description="Write Point's uses quantity",
      *      required=false,
      *      @OA\Schema(
      *          type="integer",
@@ -194,7 +194,7 @@ class PointController extends Controller
      *  @OA\Parameter(
      *      name="note",
      *      in="query",
-     *      description="Write Tag's description",
+     *      description="Write Point's description",
      *      required=false,
      *      @OA\Schema(
      *          type="string",
@@ -203,7 +203,7 @@ class PointController extends Controller
      *  ),
      * 	@OA\Response(
      * 		response=201,
-     *		description="Create Tag",
+     *		description="Create Point",
      *		@OA\JsonContent(
      *		    ref="#/components/schemas/PointSchema",
      *          example={"response": {
@@ -288,29 +288,28 @@ class PointController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Point  $Tag
+     * @param  \App\Point  $point
      * @return \Illuminate\Http\Response
      */
     /**
 	 * @OA\GET(
-     * 	path="/api/points/{id}",
+     * 	path="/api/points/{point_key}",
      *  operationId="show",
-     * 	summary="Show Tag",
+     * 	summary="Show Point",
 	 * 	tags={"Points"},
      *  @OA\Parameter(
-     *      name="id",
+     *      name="point_key",
      *      in="path",
-     *      description="Tag ID",
+     *      description="Point Key",
      *      required=true,
      *      @OA\Schema(
-     *          type="integer",
-     *          format="int64",
+     *          type="string",
      *          minimum=1
      *      ),
      *  ),
 	 * 	@OA\Response(
      *		response=200,
-     *		description="Show Tag",
+     *		description="Show Point",
      *		@OA\JsonContent(
      *		    ref="#/components/schemas/PointSchema",
      *          example={"response": {
@@ -350,10 +349,10 @@ class PointController extends Controller
      *   security={ {"bearerAuth": {} } }
 	 * )
 	 */
-    public function show( $id, Request $request )
+    public function show( $point_key, Request $request )
     {
         //
-        $data = Point::where( 'is_active', true )->where( 'is_deleted', false )->where( 'id', $id )->firstOrFail(  );
+        $data = Point::where( 'is_active', true )->where( 'is_deleted', false )->where( 'key', $point_key )->firstOrFail(  );
 
 		if ( $request->wantsJson(  ) ) {
 			return $data;
@@ -366,19 +365,19 @@ class PointController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Point  $Tag
+     * @param  \App\Point  $point
      * @return \Illuminate\Http\Response
      */
     /**
      * @OA\PUT(
      * 	path="/api/points",
      *  operationId="update",
-     * 	summary="Update Tag Method",
+     * 	summary="Update Point Method",
      * 	tags={"Points"},
      * @OA\Parameter(
      *      name="id",
      *      in="path",
-     *      description="Tag ID",
+     *      description="Point ID",
      *      required=true,
      *      @OA\Schema(
      *          type="integer",
@@ -409,7 +408,7 @@ class PointController extends Controller
      * @OA\Parameter(
      *      name="message",
      *      in="query",
-     *      description="Write the Tag's message",
+     *      description="Write the Point's message",
      *      required=false,
      *      @OA\Schema(
      *          type="string",
@@ -419,7 +418,7 @@ class PointController extends Controller
      * @OA\Parameter(
      *      name="max_uses",
      *      in="query",
-     *      description="Write Tag's uses quantity",
+     *      description="Write Point's uses quantity",
      *      required=false,
      *      @OA\Schema(
      *          type="integer",
@@ -429,7 +428,7 @@ class PointController extends Controller
      *  @OA\Parameter(
      *      name="note",
      *      in="query",
-     *      description="Write Tag's description",
+     *      description="Write Point's description",
      *      required=false,
      *      @OA\Schema(
      *          type="string",
@@ -438,7 +437,7 @@ class PointController extends Controller
      *  ),
      * 	@OA\Response(
      * 		response=201,
-     *		description="Update Tag",
+     *		description="Update Point",
      *		@OA\JsonContent(
      *		    ref="#/components/schemas/PointSchema",
      *          example={"response": {
@@ -539,19 +538,19 @@ class PointController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Point  $Tag
+     * @param  \App\Point  $point
      * @return \Illuminate\Http\Response
      */
     /**
 	 * @OA\DELETE(
      * 	path="/api/points/{id}",
      *  operationId="destroy",
-     * 	summary="Delete Tag",
+     * 	summary="Delete Point",
 	 * 	tags={"Points"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
-     *      description="Tag ID",
+     *      description="Point ID",
      *      required=true,
      *      @OA\Schema(
      *          type="integer",
@@ -561,7 +560,7 @@ class PointController extends Controller
      *  ),
 	 * 	@OA\Response(
      *		response=200,
-     *		description="Delete Tag",
+     *		description="Delete Point",
      *		@OA\JsonContent(
      *		    ref="#/components/schemas/PointSchema",
      *          example={"response": {
@@ -618,7 +617,7 @@ class PointController extends Controller
 	 * @OA\POST(
      * 	path="/api/points/search",
      *  operationId="search",
-     * 	summary="Search a Tag",
+     * 	summary="Search a Point",
 	 * 	tags={"Points"},
      * @OA\Parameter(
      *      name="key",
@@ -643,7 +642,7 @@ class PointController extends Controller
      * @OA\Parameter(
      *      name="max_uses",
      *      in="query",
-     *      description="Write the Tag's max uses",
+     *      description="Write the Point's max uses",
      *      required=false,
      *      @OA\Schema(
      *          type="string",

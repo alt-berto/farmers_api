@@ -64,7 +64,7 @@ $router->group( [ 'middleware' => 'jwt', 'prefix' => 'api' ], function(  ) use (
   $router->get( '/points/list', 'PointController@list' );
   $router->post( '/points/search', 'PointController@search' );
   $router->post( '/points', 'PointController@store' );
-  $router->get( '/points/{id}', 'PointController@show' );
+  $router->get( '/points/{point_key}', 'PointController@show' );
   $router->put( '/points/{id}', 'PointController@update' );
   $router->patch( '/points/{id}', 'PointController@update' );
   $router->delete( '/points/{id}', 'PointController@destroy' );
