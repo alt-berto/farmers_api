@@ -129,6 +129,12 @@ class InventoryController extends Controller
     {
         //
         $data = Inventory::with( [ 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false )->get(  );
+        //foreach( $data as $item ) {
+            //$item->setImages(  );
+            //$item->image = url( '/img/inventories/'.$item->image );
+
+        //}
+        //$data->setImages();
 		if ( $request->wantsJson(  ) ) {
 			return $data;
             //return $data->toJson(  );

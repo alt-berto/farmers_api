@@ -33,7 +33,7 @@ class OrderDetailController extends Controller
      * @OA\POST(
      * 	path="/api/order/details",
      *  operationId="store",
-     * 	summary="Create Category Method",
+     * 	summary="Create Details Method",
      * 	tags={"OrderDetails"},
      * @OA\Parameter(
      *      name="order_id",
@@ -68,7 +68,7 @@ class OrderDetailController extends Controller
      *  @OA\Parameter(
      *      name="note",
      *      in="query",
-     *      description="Write category's description",
+     *      description="Write Details's description",
      *      required=false,
      *      @OA\Schema(
      *          type="string",
@@ -77,7 +77,7 @@ class OrderDetailController extends Controller
      *  ),
      * 	@OA\Response(
      * 		response=201,
-     *		description="Create Category",
+     *		description="Create Details",
      *		@OA\JsonContent(
      *		    ref="#/components/schemas/OrderDetailSchema",
      *          example={"response": {
@@ -178,14 +178,14 @@ class OrderDetailController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\OrderDetail  $category
+     * @param  \App\OrderDetail  $order_detail
      * @return \Illuminate\Http\Response
      */
     /**
 	 * @OA\GET(
      * 	path="/api/order/{order_id}/details",
      *  operationId="show",
-     * 	summary="Show Category",
+     * 	summary="Show Details",
 	 * 	tags={"OrderDetails"},
      *  @OA\Parameter(
      *      name="order_id",
@@ -200,7 +200,7 @@ class OrderDetailController extends Controller
      *  ),
 	 * 	@OA\Response(
      *		response=200,
-     *		description="Show Category",
+     *		description="Show Details",
      *		@OA\JsonContent(
      *		    ref="#/components/schemas/OrderDetailSchema",
      *          example={"response": {
@@ -271,19 +271,19 @@ class OrderDetailController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\OrderDetail  $category
+     * @param  \App\OrderDetail  $order_detail
      * @return \Illuminate\Http\Response
      */
     /**
      * @OA\PUT(
      * 	path="/api/order/details",
      *  operationId="update",
-     * 	summary="Update Category Method",
+     * 	summary="Update Details Method",
      * 	tags={"OrderDetails"},
      * @OA\Parameter(
      *      name="id",
      *      in="path",
-     *      description="Category ID",
+     *      description="Details ID",
      *      required=true,
      *      @OA\Schema(
      *          type="integer",
@@ -324,7 +324,7 @@ class OrderDetailController extends Controller
      *  @OA\Parameter(
      *      name="note",
      *      in="query",
-     *      description="Write category's description",
+     *      description="Write Details's description",
      *      required=false,
      *      @OA\Schema(
      *          type="string",
@@ -333,7 +333,7 @@ class OrderDetailController extends Controller
      *  ),
      * 	@OA\Response(
      * 		response=201,
-     *		description="Update Category",
+     *		description="Update Details",
      *		@OA\JsonContent(
      *		    ref="#/components/schemas/OrderDetailSchema",
      *          example={"response": {
@@ -449,19 +449,19 @@ class OrderDetailController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\OrderDetail  $category
+     * @param  \App\OrderDetail  $order_detail
      * @return \Illuminate\Http\Response
      */
     /**
 	 * @OA\DELETE(
      * 	path="/api/order/details/{id}",
      *  operationId="destroy",
-     * 	summary="Delete Category",
+     * 	summary="Delete Details",
 	 * 	tags={"OrderDetails"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
-     *      description="Category ID",
+     *      description="Details ID",
      *      required=true,
      *      @OA\Schema(
      *          type="integer",
@@ -471,7 +471,7 @@ class OrderDetailController extends Controller
      *  ),
 	 * 	@OA\Response(
      *		response=200,
-     *		description="Delete Category",
+     *		description="Delete Details",
      *		@OA\JsonContent(
      *		    ref="#/components/schemas/OrderDetailSchema",
      *          example={"response": {
