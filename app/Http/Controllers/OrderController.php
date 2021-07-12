@@ -668,7 +668,7 @@ class OrderController extends Controller
      */
     /**
      * @OA\PUT(
-     * 	path="/api/orders",
+     * 	path="/api/orders/{order_id}",
      *  operationId="update",
      * 	summary="Update Order Method, The order's states: 'pending' (by default), 'done', 'canceled'",
      * 	tags={"Orders"},
