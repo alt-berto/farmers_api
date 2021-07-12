@@ -308,7 +308,13 @@ class UserPointController extends Controller
         $data_points = UserPoint::with( 'point' )->where( 'is_active', true )->where( 'is_deleted', false )->where( 'user_id', $user_id )->get(  );
         $data_orders = Order::with( 'details.inventory_price' )->where( 'state', 'done' )->where( 'is_deleted', false )->where( 'client_id', $user_id )->get(  );
         $points = $data_points->sum( 'point.value' );
-        $orders = ( count( $data_orders->details ) > 0 ) ? ( $data_orders->sum( 'details.real_price' ) * $data_orders->sum( 'details.quantity' ) ) : 0;
+        $orders = 0;
+        if ( count( $data_orders ) > 0 ) {
+            foreach ( $data_orders as $key => $value) {
+                $orders += ( count( $value->details ) > 0 ) ? ( $value->sum( 'details.real_price' ) * $value->sum( 'details.quantity' ) ) : 0;
+            }
+
+        }
 		if ( $request->wantsJson(  ) ) {
 			return [
                 "points" => $points,

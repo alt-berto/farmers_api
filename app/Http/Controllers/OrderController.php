@@ -826,11 +826,17 @@ class OrderController extends Controller
             $data_points = UserPoint::with( 'point' )->where( 'is_active', true )->where( 'is_deleted', false )->where( 'user_id', $request->client_id )->get(  );
             $data_orders = Order::with( 'details.inventory_price' )->where( 'state', 'done' )->where( 'is_deleted', false )->where( 'client_id', $request->client_id )->get(  );
             $points = $data_points->sum( 'point.value' );
-            $orders = ( count( $data_orders->details ) > 0 ) ? ( $data_orders->sum( 'details.real_price' ) * $data_orders->sum( 'details.quantity' ) ) : 0;
-            $total_order = ( count( $data->details ) > 0 ) ? ( $data->sum( 'details.real_price' ) * $data->sum( 'details.quantity' ) ) : 0;
+            $orders = 0;
+            if ( count( $data_orders ) > 0 ) {
+                foreach ( $data_orders as $key => $value) {
+                    $orders += ( count( $value->details ) > 0 ) ? ( $value->sum( 'details.real_price' ) * $value->sum( 'details.quantity' ) ) : 0;
+                }
+
+            }
+            $total_order = ( count( $data->details ) > 0 ) ? ( $data->details->sum( 'real_price' ) * $data->details->sum( 'quantity' ) ) : 0;
             $total_points = $points - $orders;
             if ( $total_order > $total_points ) {
-                return response(  )->json( [ 'message' => 'No cuenta con los puntos necesarios para efectuar la compra, favor canjea mas puntos para proseguir.' ], 404 );
+                return response(  )->json( [ 'message' => 'No cuenta con los puntos necesarios ('.$total_order.') para efectuar la compra, favor canjea mas puntos para proseguir. Sus puntos actuales son: '.$total_points ], 404 );
             }
         }
         $current_time = new \DateTime(  );
