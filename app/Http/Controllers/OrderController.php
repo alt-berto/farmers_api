@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Order;
 use App\User;
+use App\Order;
+use App\UserPoint;
+use App\OrderDetail;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
 use App\Http\Controllers\Controller;
@@ -820,7 +822,17 @@ class OrderController extends Controller
             'state' => 'required|string|max:50',
             'note' => 'nullable|string|max:250'
         ] );
-
+        if ( $request->state == 'done' ) {
+            $data_points = UserPoint::with( 'point' )->where( 'is_active', true )->where( 'is_deleted', false )->where( 'user_id', $request->client_id )->get(  );
+            $data_orders = Order::with( 'details.inventory_price' )->where( 'state', 'done' )->where( 'is_deleted', false )->where( 'client_id', $request->client_id )->get(  );
+            $points = $data_points->sum( 'point.value' );
+            $orders = $data_orders->sum( 'details.real_price' ) * $data_orders->sum( 'details.quantity' );
+            $total_order = $data->sum( 'details.real_price' ) * $data->sum( 'details.quantity' );
+            $total_points = $points - $orders;
+            if ( $total_order > $total_points ) {
+                return response(  )->json( [ 'message' => 'No cuenta con los puntos necesarios para efectuar la compra, favor canjea mas puntos para proseguir.' ], 404 );
+            }
+        }
         $current_time = new \DateTime(  );
         try {
 
