@@ -774,7 +774,7 @@ class UserController extends Controller
      *      description="Write your birthday",
      *      required=true,
      *      @OA\Schema(
-     *          type="date",
+     *          type="string",
      *      ),
      *      style="form"
      *  ),
@@ -958,7 +958,7 @@ class UserController extends Controller
             'first_name' => 'required|string|between:3,60',
             'last_name' => 'required|string|between:3,60',
             'username' => 'required|string|between:3,60',
-            'email' => 'required|string|email|max:100|unique:users',
+            'email' => 'required|string|email|max:100',
             'phone' => 'required|string|between:7,14',
             'gender' => 'required|numeric',
             //'partner_number' => 'required|string|max:50',
