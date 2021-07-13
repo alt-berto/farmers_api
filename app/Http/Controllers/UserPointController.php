@@ -131,12 +131,12 @@ class UserPointController extends Controller
         }
         $check_points = UserPoint::where( 'is_active', true )->where( 'point_id', $point->id )->get(  );
         if ( count( $check_points ) >= $point->max_uses ) {
-            return response(  )->json( [ 'message' => 'El código ya ha sido canjeado '.$point->max_uses.' veces, intente con otro código.' ], 200 );
+            return response(  )->json( [ 'message' => 'El código ya ha sido canjeado '.$point->max_uses.' veces, intente con otro código.' ], 404 );
         }
         if (  count( $check_points ) > 0 ) {
             foreach ( $check_points as $key => $value ) {
                 if ( $value->user_id == $request->user_id ) {
-                    return response(  )->json( [ 'message' => 'Ud ya ha canjeado este código' ], 200 );
+                    return response(  )->json( [ 'message' => 'Ud ya ha canjeado este código' ], 404 );
                 }
             }
         }
