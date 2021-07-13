@@ -352,7 +352,10 @@ class PointController extends Controller
     public function show( $point_key, Request $request )
     {
         //
-        $data = Point::where( 'is_active', true )->where( 'is_deleted', false )->where( 'key', $point_key )->firstOrFail(  );
+        $data = Point::where( 'is_active', true )->where( 'is_deleted', false )->where( 'key', $point_key )->first(  );
+        if ( !$data ) {
+            return response(  )->json( [ 'message' => 'Código no encontrado, favor verificar que sea un código valido e intente nuevamente.' ], 404 );
+        }
 
 		if ( $request->wantsJson(  ) ) {
 			return $data;
