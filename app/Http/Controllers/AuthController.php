@@ -565,7 +565,7 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:100|unique:users',
             'phone' => 'required|string|between:7,14',
             'gender' => 'required|numeric',
-            'partner_number' => 'required|string|max:50',
+            'partner_number' => 'nullable|string|max:50',
             'company_name' => 'required|string|between:3,60',
             'birthday' => 'nullable|string',
             'country' => 'nullable|string|max:50',
@@ -579,9 +579,9 @@ class AuthController extends Controller
             'password' => 'required|string|confirmed|min:6',
         ]);
 
-        if ( $request->input( 'partner_number' ) != env( 'PARTNER_NUMBER' ) ) {
+        /*if ( $request->input( 'partner_number' ) != env( 'PARTNER_NUMBER' ) ) {
             return response(  )->json( [ 'message' => 'Código distribuidor invalido' ], 404 );
-        }
+        }*/
 
         $current_time = new \DateTime(  );
         $user = User::create( [
