@@ -61,7 +61,7 @@ $router->group( [ 'middleware' => 'jwt', 'prefix' => 'api' ], function(  ) use (
 
   /*--- Point Begin ---*/
   $router->get( '/points', 'PointController@index' );
-  $router->get( '/points/list', 'PointController@list' );
+  $router->get( '/points/list/{user_id}', 'PointController@list' );
   $router->post( '/points/search', 'PointController@search' );
   $router->post( '/points', 'PointController@store' );
   $router->get( '/points/{point_key}', 'PointController@show' );

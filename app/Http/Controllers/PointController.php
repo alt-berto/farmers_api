@@ -78,10 +78,20 @@ class PointController extends Controller
 
     /**
 	 * @OA\GET(
-     * 	path="/api/points/list",
+     * 	path="/api/points/list/{user_id}",
      *  operationId="list",
      * 	summary="Return a paginated list of all the points registered",
 	 * 	tags={"Points"},
+     *  @OA\Parameter(
+     *      name="user_id",
+     *      in="path",
+     *      description="User ID",
+     *      required=true,
+     *      @OA\Schema(
+     *          type="integer",
+     *          minimum=1
+     *      ),
+     *  ),
 	 * 	@OA\Response(
      *		response=200,
      *		description="A paginated list of all the points registered",
@@ -128,10 +138,13 @@ class PointController extends Controller
 	 * )
 	 */
 
-    public function list( Request $request )
+    public function list( $user_id, Request $request )
     {
         //
-        $data = Point::where( 'is_active', true )->where( 'is_deleted', false )->paginate( 15 );
+        $data = Point::with( 'users' )->where( 'is_active', true )->where( 'is_deleted', false )
+        ->whereHas( 'users', function( $query ) use ( $user_id ) {
+            return $query->where( 'user_id', $user_id );
+        } )->paginate( 15 );
 
 		if ( $request->wantsJson(  ) ) {
 			return $data;
