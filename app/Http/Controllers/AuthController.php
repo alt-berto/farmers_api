@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use JWTAuth;
 use App\User;
-use Validator;
+use App\UserCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
@@ -72,7 +71,7 @@ class AuthController extends Controller
      *   ),
      * )
      */
-    public function login( Request $request )
+    public function login( Request $request ) : object
     {
         $this->validate( $request, [
             'username' => 'required|max:60',
@@ -174,7 +173,7 @@ class AuthController extends Controller
      *  security={ {"bearerAuth": {} } }
      * )
      */
-    public function me(  )
+    public function me(  ) : object
     {
         try {
             if ( !$id = JWTAuth::parseToken(  )->authenticate(  ) ) {
@@ -223,7 +222,7 @@ class AuthController extends Controller
      *  security={ {"bearerAuth": {} } }
      * )
      */
-    public function logout(  )
+    public function logout(  ) : object
     {
         auth(  )->logout(  );
 
@@ -264,7 +263,7 @@ class AuthController extends Controller
      *  security={ {"bearerAuth": {} } }
      * )
      */
-    public function refresh(  )
+    public function refresh(  ) : object
     {
         return $this->createNewToken( auth(  )->refresh(  ) );
     }
@@ -277,7 +276,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function createNewToken( $token ) {
+    protected function createNewToken( $token ) : object {
         return response(  )->json( [
             'access_token' => $token,
             'token_type' => 'bearer',
@@ -288,8 +287,8 @@ class AuthController extends Controller
 
     /**
      * Register a User.
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return object
      */
     /**
      * @OA\POST(
@@ -391,9 +390,9 @@ class AuthController extends Controller
      *      name="birthday",
      *      in="query",
      *      description="Write your birthday",
-     *      required=true,
+     *      required=false,
      *      @OA\Schema(
-     *          type="date",
+     *          type="string",
      *      ),
      *      style="form"
      *  ),
@@ -556,7 +555,7 @@ class AuthController extends Controller
      *  ),
      * )
      */
-    public function register( Request $request ) {
+    public function register( Request $request ) : object {
         $this->validate( $request, [
             'company_id' => 'numeric|nullable',
             'first_name' => 'required|string|between:3,60',
@@ -565,7 +564,7 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:100|unique:users',
             'phone' => 'required|string|between:7,14',
             'gender' => 'required|numeric',
-            'partner_number' => 'nullable|string|max:50',
+            'partner_number' => 'nullable|string|max:100',
             'company_name' => 'required|string|between:3,60',
             'birthday' => 'nullable|string',
             'country' => 'nullable|string|max:50',
@@ -579,40 +578,62 @@ class AuthController extends Controller
             'password' => 'required|string|confirmed|min:6',
         ]);
 
-        /*if ( $request->input( 'partner_number' ) != env( 'PARTNER_NUMBER' ) ) {
-            return response(  )->json( [ 'message' => 'Código distribuidor invalido' ], 404 );
-        }*/
-
         $current_time = new \DateTime(  );
-        $user = User::create( [
-            'company_id' => $request->input( 'company_id' ),
-            'first_name' => $request->input( 'first_name' ),
-            'last_name' => $request->input( 'last_name' ),
-            'username' => $request->input( 'username' ),
-            'email' => $request->input( 'email' ),
-            'phone' => $request->input( 'phone' ),
-            'gender' => $request->input( 'gender' ),
-            'company_name' => $request->input( 'company_name' ),
-            'birthday' => $request->input( 'birthday' ),
-            'country' => $request->input( 'country' ),
-            'province' => $request->input( 'province' ),
-            'canton' => $request->input( 'canton' ),
-            'district' => $request->input( 'district' ),
-            'zip' => $request->input( 'zip' ),
-            'address' => $request->input( 'address' ),
-            'points' => $request->input( 'points' ),
-            'image' => $request->input( 'image' ),
-            'password' => Hash::make( $request->input( 'password' ) ),
-            'is_active' => true,
-            'created_at' => $current_time->format( "Y-m-d H:i:s" ),
-            'updated_at' => $current_time->format( "Y-m-d H:i:s" )
+        $check_partner_code = User::where( 'partner_number', $request->input( 'partner_number' ) )->get(  );
+        $user_codes = UserCode::where( 'key', $request->input( 'partner_number' ) )->first(  );
+        if ( $user_codes ) {
+            if ( count( $check_partner_code ) >= $user_codes->max_uses ) {
+                return response()->json( [
+                    'success' => false,
+                    'message' => "El código de verificación excede la cantidad de usos maximos ($user_codes->max_uses)"
+                ] );
+            }
+        } else {
+            return response()->json( [
+                'success' => false,
+                'message' => "El código de verificación ingresado no existe."
+            ] );
+        }
+        try {
+            $user = User::create( [
+                'company_id' => $request->input( 'company_id' ),
+                'partner_number' => $request->input( 'partner_number' ),
+                'first_name' => $request->input( 'first_name' ),
+                'last_name' => $request->input( 'last_name' ),
+                'username' => $request->input( 'username' ),
+                'email' => $request->input( 'email' ),
+                'phone' => $request->input( 'phone' ),
+                'gender' => $request->input( 'gender' ),
+                'company_name' => $request->input( 'company_name' ),
+                'birthday' => $request->input( 'birthday' ),
+                'country' => $request->input( 'country' ),
+                'province' => $request->input( 'province' ),
+                'canton' => $request->input( 'canton' ),
+                'district' => $request->input( 'district' ),
+                'zip' => $request->input( 'zip' ),
+                'address' => $request->input( 'address' ),
+                'points' => $request->input( 'points' ),
+                'image' => $request->input( 'image' ),
+                'password' => Hash::make( $request->input( 'password' ) ),
+                'is_active' => true,
+                'created_at' => $current_time->format( "Y-m-d H:i:s" ),
+                'updated_at' => $current_time->format( "Y-m-d H:i:s" )
 
-        ] );
+            ] );
 
-        return response(  )->json ([
-            'message' => 'Usuario creado correctamente',
-            'user' => $user
-        ], 201 );
+            return response(  )->json ([
+                'message' => 'Usuario creado correctamente',
+                'user' => $user
+            ], 201 );
+        } catch ( \Exception $e ) {
+            //return error message
+            //dd('Exception block', $e);
+            //return $e;
+            return response()->json( [
+                'success' => false,
+                'message' => 'Hubo un fallo al hacer el registro.'
+            ] );
+        }
     }
 
 

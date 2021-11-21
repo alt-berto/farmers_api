@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @OA\Schema(
- * 	schema="PointSchema",
- * 	title="Point Model",
- * 	description="Point model",
+ * 	schema="RedeemableProductSchema",
+ * 	title="Redeemable Product Model",
+ * 	description="Redeemable Product model",
  * 	@OA\Property(
- * 		property="id", description="ID of the Point",
+ * 		property="id", description="ID of the Redeemable Product",
  *      @OA\Schema(type="number", example=1)
  *	),
  *     @OA\Property(
@@ -18,20 +18,16 @@ use Illuminate\Database\Eloquent\Model;
  *      @OA\Schema(type="varchar(250)", example="87312874128472")
  *	),
  * 	@OA\Property(
- *  	property="key", description="Point Key",
- *      @OA\Schema(type="varchar(250)", example="87312874128472")
- *	),
- * 	@OA\Property(
- *   	property="value", description="Point Value",
+ *   	property="value", description="Product Value",
  *      @OA\Schema(type="double(10,2)", example="200.00")
  *	),
  * 	@OA\Property(
- *  	property="message", description="Point Message",
+ *  	property="name", description="Name",
  *      @OA\Schema(type="varchar(250)", example="Any Text")
  *	),
  * 	@OA\Property(
- * 		property="max_uses", description="How many uses it have",
- *      @OA\Schema(type="number", example=1)
+ * 		property="description", description="Description",
+ *      @OA\Schema(type="varchar(250)", example="Any text")
  *	),
  * 	@OA\Property(
  *   	property="note", description="Observations",
@@ -55,7 +51,7 @@ use Illuminate\Database\Eloquent\Model;
  *	)
  * )
  */
-class Point extends Model
+class RedeemableProduct extends Model
 {
     //
     protected $guarded = [  ];
@@ -68,10 +64,9 @@ class Point extends Model
     protected $fillable = [
         'id',
         'sku',
-        'key',
         'value',
-        'message',
-        'max_uses',
+        'name',
+        'description',
         'note',
         'is_active',
         'is_deleted',
@@ -86,17 +81,8 @@ class Point extends Model
      */
     protected $hidden = [  ];
 
-    public function redeemable_product(  )
+    public function points(  )
     {
-        return $this->belongsTo( RedeemableProduct::class, 'sku', 'sku ' );
-    }
-    public function products(  )
-    {
-        return $this->hasMany( Inventory::class, 'point_id', 'id' );
-    }
-
-    public function users(  )
-    {
-        return $this->hasMany( UserPoint::class, 'point_id', 'id' );
+        return $this->hasMany( Point::class, 'sku', 'sku' );
     }
 }

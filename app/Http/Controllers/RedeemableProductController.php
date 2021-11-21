@@ -1,14 +1,13 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
-use App\Point;
 use App\RedeemableProduct;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
-use Barryvdh\DomPDF\Facade as PDF;
 
-class PointController extends Controller
+class RedeemableProductController extends Controller
 {
     use ApiResponser;
 
@@ -21,53 +20,29 @@ class PointController extends Controller
     {
 
     }
-
+    /**
+     * Display a listing of the resource.
+     *
+     * @return object
+     */
     /**
      * @OA\GET(
-     * 	path="/api/points/generator/sku/{sku}/value/{value}/quantity/{quantity}",
-     *  operationId="pdf_generator",
-     * 	summary="Generate QRs",
-     * 	tags={"Points"},
-     *  @OA\Parameter(
-     *      name="sku",
-     *      in="path",
-     *      description="Product SKU",
-     *      required=true,
-     *      @OA\Schema(
-     *          type="string"
-     *      ),
-     *  ),
-     *  @OA\Parameter(
-     *      name="value",
-     *      in="path",
-     *      description="Point Value",
-     *      required=true,
-     *      @OA\Schema(
-     *          type="number"
-     *      ),
-     *  ),
-     *  @OA\Parameter(
-     *      name="quantity",
-     *      in="path",
-     *      description="QR Quantity",
-     *      required=true,
-     *      @OA\Schema(
-     *          type="string",
-     *          minimum=1
-     *      ),
-     *  ),
+     *    path="/api/redeemable/products",
+     *  operationId="index",
+     *    summary="Return all the redeemable products",
+     *    tags={"RedeemableProduct"},
      * 	@OA\Response(
-     *		response=200,
-     *		description="Generate QRs",
+     *        response=200,
+     *        description="List of all the redeemable products",
      *		@OA\JsonContent(
-     *		    ref="#/components/schemas/PointSchema",
+     *            ref="#/components/schemas/RedeemableProductSchema",
      *           example={"response": {
      *              "data":{
      *                 "id": 1,
-     *                 "key": "3caff61cb19d855503fe",
+     *                 "sku": "123572363",
      *                 "value": "1000.00",
-     *                 "message": "Puntos promocionales exclusivos de...",
-     *                 "max_uses": "5",
+     *                 "name": "Piclor",
+     *                 "description": "Pre-Registro",
      *                 "note": "Pre-Registro",
      *                 "is_active": "1",
      *                 "is_deleted": "0",
@@ -77,8 +52,8 @@ class PointController extends Controller
      *             }
      *
      *          }
-     *		)
-     *	),
+     *        )
+     *    ),
      *	@OA\Response(
      *       response="default",
      *       description="Error: Bad request. When required parameters were not supplied.",
@@ -90,114 +65,31 @@ class PointController extends Controller
      *  security={ {"bearerAuth": {} } }
      * )
      */
-    public function pdf_generator( string $sku, int $value, int $quantity = 1 ) {
-        $product = RedeemableProduct::where( 'sku', $sku )->firstOrFail();
-        $items = array(  );
-        $current_time = new \DateTime(  );
-        for ( $i = 0; $i < $quantity; $i++ ) {
-           $added = Point::create( [
-               'key' => $this->random_string( 20 ),
-               'sku' => $sku,
-               'max_uses' => 1,
-               'value' => $value,
-               'message' => "Puntos promocionales exclusivos",
-               'note' => "Generador de QRs",
-               'is_active' => true,
-               'created' => $current_time->format( "Y-m-d H:i:s" ),
-               'modified' => $current_time->format( "Y-m-d H:i:s" )
-           ] );
-            $items[] = $added;
-        }
-        $pdf = PDF::loadView( "pdfs.qr_list", compact( 'items', 'product' ) )->setPaper( 'a4', 'letter' );
 
-        return $pdf->download( $product->name."_list.pdf" );
-    }
-
-    function random_string(int $size): string
+    public function index(  ): object
     {
-        $bytes = random_bytes($size / 2);
-        return bin2hex($bytes);
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return object
-     */
-    /**
-	 * @OA\GET(
-     * 	path="/api/points",
-     *  operationId="index",
-     * 	summary="Return all the points",
-	 * 	tags={"Points"},
-	 * 	@OA\Response(
-     *		response=200,
-     *		description="List of all the points registered",
-     *		@OA\JsonContent(
-     *		    ref="#/components/schemas/PointSchema",
-     *           example={"response": {
-     *              "data":{
-     *                 "id": 1,
-     *                 "key": "3caff61cb19d855503fe",
-     *                 "value": "1000.00",
-     *                 "message": "Puntos promocionales exclusivos de...",
-     *                 "max_uses": "5",
-     *                 "note": "Pre-Registro",
-     *                 "is_active": "1",
-     *                 "is_deleted": "0",
-     *                 "created_at": "2021-06-30T00:21:57.000000Z",
-     *                 "updated_at": "2021-06-30T00:21:57.000000Z"
-     *               },
-     *             }
-     *
-     *          }
-     *		)
-     *	),
-     *	@OA\Response(
-     *       response="default",
-     *       description="Error: Bad request. When required parameters were not supplied.",
-     *   ),
-     *  @OA\Response(
-     *         response=401,
-     *         description="Check Token"
-     *  ),
-     *  security={ {"bearerAuth": {} } }
-	 * )
-	 */
-    public function index(  ) : object
-    {
-        return Point::where( 'is_active', true )->where( 'is_deleted', false )->get(  );
+        return RedeemableProduct::with('points')->where('is_active', true)->where('is_deleted', false)->get();
 
     }
 
     /**
-	 * @OA\GET(
-     * 	path="/api/points/list/{user_id}",
+     * @OA\GET(
+     *    path="/api/redeemable/products/list",
      *  operationId="list",
-     * 	summary="Return a paginated list of all the points registered",
-	 * 	tags={"Points"},
-     *  @OA\Parameter(
-     *      name="user_id",
-     *      in="path",
-     *      description="User ID",
-     *      required=true,
-     *      @OA\Schema(
-     *          type="integer",
-     *          minimum=1
-     *      ),
-     *  ),
-	 * 	@OA\Response(
-     *		response=200,
-     *		description="A paginated list of all the points registered",
+     *    summary="Return a paginated list of all the redeemable products registered",
+     *    tags={"RedeemableProduct"},
+     * 	@OA\Response(
+     *        response=200,
+     *        description="A paginated list of all the redeemable products registered",
      *		@OA\JsonContent(
-     *		    ref="#/components/schemas/PointSchema",
+     *            ref="#/components/schemas/RedeemableProductSchema",
      *           example={"response": {
      *              "data":{
      *                 "id": 1,
-     *                 "key": "3caff61cb19d855503fe",
+     *                 "sku": "123572363",
      *                 "value": "1000.00",
-     *                 "message": "Puntos promocionales exclusivos de...",
-     *                 "max_uses": "5",
+     *                 "name": "Piclor",
+     *                 "description": "Pre-Registro",
      *                 "note": "Pre-Registro",
      *                 "is_active": "1",
      *                 "is_deleted": "0",
@@ -210,16 +102,16 @@ class PointController extends Controller
      *               "per_page": 15,
      *               "to": 1,
      *               "total": 1,
-     *               "first_page_url": "/api/points/list?page=1",
-     *               "last_page_url": "/api/points/list?page=1",
-     *               "path": "/api/points/list",
+     *               "first_page_url": "/api/redeemable/products/list?page=1",
+     *               "last_page_url": "/api/redeemable/products/list?page=1",
+     *               "path": "/api/redeemable/products/list",
      *               "prev_page_url": null,
      *               "next_page_url": null,
      *             }
      *
      *          }
-     *		)
-     *	),
+     *        )
+     *    ),
      *	@OA\Response(
      *       response="default",
      *       description="Error: Bad request. When required parameters were not supplied.",
@@ -229,14 +121,11 @@ class PointController extends Controller
      *         description="Check Token"
      *  ),
      *  security={ {"bearerAuth": {} } }
-	 * )
-	 */
-    public function list( int $user_id ) : object
+     * )
+     */
+    public function list(): object
     {
-        return Point::with( 'users' )->where( 'is_active', true )->where( 'is_deleted', false )
-        ->whereHas( 'users', function( $query ) use ( $user_id ) {
-            return $query->where( 'user_id', $user_id );
-        } )->paginate( 15 );
+        return RedeemableProduct::with('points')->where('is_active', true)->where('is_deleted', false)->paginate(15);
     }
 
     /**
@@ -247,15 +136,15 @@ class PointController extends Controller
      */
     /**
      * @OA\POST(
-     * 	path="/api/points",
-     *  operationId="store",
-     * 	summary="Create Point Method",
-     * 	tags={"Points"},
+     *    path="/api/redeemable/products",
+     *    operationId="store",
+     *    summary="Create redeemable products Method",
+     *    tags={"RedeemableProduct"},
      * @OA\Parameter(
-     *      name="key",
+     *      name="sku",
      *      in="query",
-     *      description="Write the point key",
-     *      required=false,
+     *      description="Write the SKU",
+     *      required=true,
      *      @OA\Schema(
      *          type="string",
      *      ),
@@ -264,37 +153,37 @@ class PointController extends Controller
      * @OA\Parameter(
      *      name="value",
      *      in="query",
-     *      description="Write the point value",
-     *      required=true,
+     *      description="Write the value",
+     *      required=false,
      *      @OA\Schema(
-     *          type="integer",
+     *          type="number",
      *      ),
      *      style="form"
      *  ),
      * @OA\Parameter(
-     *      name="message",
+     *      name="name",
      *      in="query",
-     *      description="Write the Point's message",
-     *      required=false,
+     *      description="Write the prduct name",
+     *      required=true,
      *      @OA\Schema(
      *          type="string",
      *      ),
      *      style="form"
      *  ),
      * @OA\Parameter(
-     *      name="max_uses",
+     *      name="description",
      *      in="query",
-     *      description="Write Point's uses quantity",
+     *      description="Write the product description",
      *      required=false,
      *      @OA\Schema(
-     *          type="integer",
+     *          type="string",
      *      ),
      *      style="form"
      *  ),
      *  @OA\Parameter(
      *      name="note",
      *      in="query",
-     *      description="Write Point's description",
+     *      description="Write the description",
      *      required=false,
      *      @OA\Schema(
      *          type="string",
@@ -302,17 +191,17 @@ class PointController extends Controller
      *      style="form"
      *  ),
      * 	@OA\Response(
-     * 		response=201,
-     *		description="Create Point",
+     *        response=201,
+     *        description="Create redeemable products",
      *		@OA\JsonContent(
-     *		    ref="#/components/schemas/PointSchema",
+     *            ref="#/components/schemas/RedeemableProductSchema",
      *          example={"response": {
      *              "data":{
      *                 "id": 1,
-     *                 "key": "3caff61cb19d855503fe",
+     *                 "sku": "123572363",
      *                 "value": "1000.00",
-     *                 "message": "Puntos promocionales exclusivos de...",
-     *                 "max_uses": "5",
+     *                 "name": "Piclor",
+     *                 "description": "Pre-Registro",
      *                 "note": "Pre-Registro",
      *                 "is_active": "1",
      *                 "is_deleted": "0",
@@ -322,8 +211,8 @@ class PointController extends Controller
      *             }
      *
      *          }
-     *		)
-     *	),
+     *        )
+     *    ),
      *	@OA\Response(
      *       response="default",
      *       description="Error: Bad request. When required parameters were not supplied.",
@@ -343,81 +232,83 @@ class PointController extends Controller
      *  security={ {"bearerAuth": {} } }
      * )
      */
-    public function store( Request $request ) : object
+    public function store(Request $request): object
     {
         // Validate incoming request
-        $this->validate( $request, [
-            'key' => 'nullable|string',
-            'value' => 'required|numeric',
-            'message' => 'nullable|string|max:200',
-            'max_uses' => 'nullable|numeric',
+        $this->validate($request, [
+            'sku' => 'required|string|unique:redeemable_products',
+            'value' => 'nullable|numeric',
+            'name' => 'required|string|max:200',
+            'description' => 'nullable|string|max:250',
             'note' => 'nullable|string|max:250'
-        ] );
-        $current_time = new \DateTime(  );
+        ]);
+        $current_time = new \DateTime();
         try {
             //
-            $in_data = Point::create( [
-                'key' => $request->input( 'key' ),
-                'value' => $request->input( 'value' ),
-                'message' => $request->input( 'message' ),
-                'note' => $request->input( 'note' ),
+            $in_data = RedeemableProduct::create([
+                'sku' => $request->input('sku'),
+                'value' => $request->input('value') ?? 1,
+                'name' => $request->input('name'),
+                'description' => $request->input('description'),
+                'note' => $request->input('note'),
                 'is_active' => true,
-                'created' => $current_time->format( "Y-m-d H:i:s" ),
-                'modified' => $current_time->format( "Y-m-d H:i:s" )
-            ] );
+                'created' => $current_time->format("Y-m-d H:i:s"),
+                'modified' => $current_time->format("Y-m-d H:i:s")
+            ]);
 
             //return successful response
-            return response()->json( [
+            return response()->json([
                 'data' => $in_data,
                 'success' => true,
                 'message' => 'Se ha agregado correctamente!.'
-            ] );
+            ]);
 
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             //return error message
             //dd('Exception block', $e);
             //return $e;
-            return response()->json( [
+            return response()->json([
                 'success' => false,
-                'message' => 'Hubo un fallo al hacer el registro.'
-            ] );
+                'message' => $e->getMessage()
+                //'message' => 'Hubo un fallo al hacer el registro.'
+            ]);
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param string $point_key
+     * @param string $sku
      * @return object
      */
     /**
-	 * @OA\GET(
-     * 	path="/api/points/{point_key}",
-     *  operationId="show",
-     * 	summary="Show Point",
-	 * 	tags={"Points"},
+     * @OA\GET(
+     *    path="/api/redeemable/products/{sku}",
+     *    operationId="show",
+     *    summary="Show redeemable products",
+     *    tags={"RedeemableProduct"},
      *  @OA\Parameter(
-     *      name="point_key",
+     *      name="sku",
      *      in="path",
-     *      description="Point Key",
+     *      description="Product SKU",
      *      required=true,
      *      @OA\Schema(
      *          type="string",
      *          minimum=1
      *      ),
      *  ),
-	 * 	@OA\Response(
-     *		response=200,
-     *		description="Show Point",
+     * 	@OA\Response(
+     *        response=200,
+     *        description="Show redeemable products",
      *		@OA\JsonContent(
-     *		    ref="#/components/schemas/PointSchema",
-     *          example={"response": {
+     *            ref="#/components/schemas/RedeemableProductSchema",
+     *            example={"response": {
      *              "data":{
      *                 "id": 1,
-     *                 "key": "3caff61cb19d855503fe",
+     *                 "sku": "123572363",
      *                 "value": "1000.00",
-     *                 "message": "Puntos promocionales exclusivos de...",
-     *                 "max_uses": "5",
+     *                 "name": "Piclor",
+     *                 "description": "Pre-Registro",
      *                 "note": "Pre-Registro",
      *                 "is_active": "1",
      *                 "is_deleted": "0",
@@ -427,8 +318,8 @@ class PointController extends Controller
      *             }
      *
      *          }
-     *		)
-     *	),
+     *        )
+     *    ),
      *	@OA\Response(
      *       response="default",
      *       description="Error: 'Resource not found.",
@@ -446,13 +337,13 @@ class PointController extends Controller
      *         description="Resources not found"
      *  ),
      *   security={ {"bearerAuth": {} } }
-	 * )
-	 */
-    public function show( string $point_key ) : object
+     * )
+     */
+    public function show(string $sku): object
     {
-        $data = Point::where( 'is_active', true )->where( 'is_deleted', false )->where( 'key', $point_key )->first(  );
-        if ( !$data ) {
-            return response(  )->json( [ 'message' => 'Código no encontrado, favor verificar que sea un código valido e intente nuevamente.' ], 404 );
+        $data = RedeemableProduct::where('is_active', true)->where('is_deleted', false)->where('sku', $sku)->first();
+        if (!$data) {
+            return response()->json(['message' => 'Producto no encontrado'], 404);
         }
         return $data;
     }
@@ -467,14 +358,14 @@ class PointController extends Controller
      */
     /**
      * @OA\PUT(
-     * 	path="/api/points",
-     *  operationId="update",
-     * 	summary="Update Point Method",
-     * 	tags={"Points"},
+     *    path="/api/redeemable/products",
+     *    operationId="update",
+     *    summary="Update redeemable products Method",
+     *    tags={"RedeemableProduct"},
      * @OA\Parameter(
      *      name="id",
      *      in="path",
-     *      description="Point ID",
+     *      description="Redeemable Product ID",
      *      required=true,
      *      @OA\Schema(
      *          type="integer",
@@ -483,10 +374,10 @@ class PointController extends Controller
      *      ),
      * ),
      * @OA\Parameter(
-     *      name="key",
+     *      name="sku",
      *      in="query",
-     *      description="Write the point key",
-     *      required=false,
+     *      description="Write the SKU",
+     *      required=true,
      *      @OA\Schema(
      *          type="string",
      *      ),
@@ -495,37 +386,37 @@ class PointController extends Controller
      * @OA\Parameter(
      *      name="value",
      *      in="query",
-     *      description="Write the point value",
-     *      required=true,
+     *      description="Write the value",
+     *      required=false,
      *      @OA\Schema(
-     *          type="integer",
+     *          type="number",
      *      ),
      *      style="form"
      *  ),
      * @OA\Parameter(
-     *      name="message",
+     *      name="name",
      *      in="query",
-     *      description="Write the Point's message",
-     *      required=false,
+     *      description="Write the prduct name",
+     *      required=true,
      *      @OA\Schema(
      *          type="string",
      *      ),
      *      style="form"
      *  ),
      * @OA\Parameter(
-     *      name="max_uses",
+     *      name="description",
      *      in="query",
-     *      description="Write Point's uses quantity",
+     *      description="Write the product description",
      *      required=false,
      *      @OA\Schema(
-     *          type="integer",
+     *          type="string",
      *      ),
      *      style="form"
      *  ),
      *  @OA\Parameter(
      *      name="note",
      *      in="query",
-     *      description="Write Point's description",
+     *      description="Write the description",
      *      required=false,
      *      @OA\Schema(
      *          type="string",
@@ -533,17 +424,17 @@ class PointController extends Controller
      *      style="form"
      *  ),
      * 	@OA\Response(
-     * 		response=201,
-     *		description="Update Point",
+     *        response=201,
+     *        description="Update redeemable products",
      *		@OA\JsonContent(
-     *		    ref="#/components/schemas/PointSchema",
+     *            ref="#/components/schemas/RedeemableProductSchema",
      *          example={"response": {
      *              "data":{
      *                 "id": 1,
-     *                 "key": "3caff61cb19d855503fe",
+     *                 "sku": "123572363",
      *                 "value": "1000.00",
-     *                 "message": "Puntos promocionales exclusivos de...",
-     *                 "max_uses": "5",
+     *                 "name": "Piclor",
+     *                 "description": "Pre-Registro",
      *                 "note": "Pre-Registro",
      *                 "is_active": "1",
      *                 "is_deleted": "0",
@@ -553,8 +444,8 @@ class PointController extends Controller
      *             }
      *
      *          }
-     *		)
-     *	),
+     *        )
+     *    ),
      *	@OA\Response(
      *       response="default",
      *       description="Error: Bad request. When required parameters were not supplied.",
@@ -582,51 +473,52 @@ class PointController extends Controller
      *  security={ {"bearerAuth": {} } }
      * )
      */
-    public function update( int $id, Request $request ) : object
+    public function update(int $id, Request $request): object
     {
-        $data = Point::where( 'id', $id )->firstOrFail(  );
+        $data = RedeemableProduct::where('id', $id)->firstOrFail();
         // Validate incoming request
-        $this->validate( $request, [
-            'key' => 'nullable|string',
-            'value' => 'required|numeric',
-            'message' => 'nullable|string|max:200',
-            'max_uses' => 'nullable|numeric',
+        $this->validate($request, [
+            'sku' => 'requited|string',
+            'value' => 'nullable|numeric',
+            'name' => 'required|string|max:200',
+            'description' => 'nullable|string|max:250',
             'note' => 'nullable|string|max:250'
-        ] );
+        ]);
 
-        $current_time = new \DateTime(  );
+        $current_time = new \DateTime();
         try {
-            $data->fill( [
-                'key' => $request->input( 'key' ),
-                'value' => $request->input( 'value' ),
-                'message' => $request->input( 'message' ),
-                'max_uses' => $request->input( 'max_uses' ),
-                'note' => $request->input( 'note' ),
+            $data->fill([
+                //'sku' => $request->input('sku'),
+                'value' => $request->input('value') ?? 1,
+                'name' => $request->input('name'),
+                'description' => $request->input('description'),
+                'note' => $request->input('note'),
                 'is_active' => true,
                 //'created_at' => $current_time->format( "Y-m-d H:i:s" ),
-                'updated_at' => $current_time->format( "Y-m-d H:i:s" )
-            ] )->save(  );
+                'updated_at' => $current_time->format("Y-m-d H:i:s")
+            ])->save();
 
-            if ( !$data->wasChanged(  ) ) {
-                return response()->json( [
+            if (!$data->wasChanged()) {
+                return response()->json([
                     'success' => false,
                     'message' => 'Tiene que modificar algun dato.'
-                ] );
+                ]);
             }
 
-            return response()->json( [
+            return response()->json([
                 'data' => $data,
                 'success' => true,
                 'message' => 'Modificación de datos se efectuo correctamente!.'
-            ] );
+            ]);
 
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             //return error message
             //dd('Exception block', $e);
-            return response()->json( [
+            return response()->json([
                 'success' => false,
-                'message' => 'Modificación de datos fallo!.'
-            ] );
+                'message' => $e->getMessage()
+                //'message' => 'Modificación de datos fallo!.'
+            ]);
         }
     }
 
@@ -637,15 +529,15 @@ class PointController extends Controller
      * @return object
      */
     /**
-	 * @OA\DELETE(
-     * 	path="/api/points/{id}",
+     * @OA\DELETE(
+     *    path="/api/redeemable/products/{id}",
      *  operationId="destroy",
-     * 	summary="Delete Point",
-	 * 	tags={"Points"},
+     *    summary="Delete redeemable products",
+     *    tags={"RedeemableProduct"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
-     *      description="Point ID",
+     *      description="Redeemable Product ID",
      *      required=true,
      *      @OA\Schema(
      *          type="integer",
@@ -653,18 +545,18 @@ class PointController extends Controller
      *          minimum=1
      *      ),
      *  ),
-	 * 	@OA\Response(
-     *		response=200,
-     *		description="Delete Point",
+     * 	@OA\Response(
+     *        response=200,
+     *        description="Delete redeemable products",
      *		@OA\JsonContent(
-     *		    ref="#/components/schemas/PointSchema",
+     *            ref="#/components/schemas/RedeemableProductSchema",
      *          example={"response": {
      *              "data":{
      *                 "id": 1,
-     *                 "key": "3caff61cb19d855503fe",
+     *                 "sku": "123572363",
      *                 "value": "1000.00",
-     *                 "message": "Puntos promocionales exclusivos de...",
-     *                 "max_uses": "5",
+     *                 "name": "Piclor",
+     *                 "description": "Pre-Registro",
      *                 "note": "Pre-Registro",
      *                 "is_active": "1",
      *                 "is_deleted": "0",
@@ -674,8 +566,8 @@ class PointController extends Controller
      *             }
      *
      *          }
-     *		)
-     *	),
+     *        )
+     *    ),
      *	@OA\Response(
      *       response="default",
      *       description="Error: 'Resource not found.",
@@ -693,47 +585,57 @@ class PointController extends Controller
      *         description="Resources not found"
      *  ),
      *   security={ {"bearerAuth": {} } }
-	 * )
-	 */
-    public function destroy( int $id ) : object
+     * )
+     */
+    public function destroy(int $id): object
     {
-        $data = Point::findOrFail( $id );
+        $data = RedeemableProduct::findOrFail($id);
         $data->is_deleted = true;
-        $data->save(  );
+        $data->save();
 
         return $data;
     }
 
     /**
-	 * @OA\POST(
-     * 	path="/api/points/search",
+     * @OA\POST(
+     *    path="/api/redeemable/products/search",
      *  operationId="search",
-     * 	summary="Search a Point",
-	 * 	tags={"Points"},
+     *    summary="Search a redeemable products",
+     *    tags={"RedeemableProduct"},
      * @OA\Parameter(
-     *      name="key",
+     *      name="sku",
      *      in="query",
-     *      description="Write the Point Key",
+     *      description="Write the Product SKU",
      *      required=false,
      *      @OA\Schema(
-     *          type="integer",
+     *          type="string",
      *      ),
      *      style="form"
      *  ),
      * @OA\Parameter(
      *      name="value",
      *      in="query",
-     *      description="Write the Point value",
+     *      description="Write the Product value",
      *      required=false,
      *      @OA\Schema(
-     *          type="integer",
+     *          type="number",
      *      ),
      *      style="form"
      *  ),
      * @OA\Parameter(
-     *      name="max_uses",
+     *      name="name",
      *      in="query",
-     *      description="Write the Point's max uses",
+     *      description="Write the name",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="string",
+     *      ),
+     *      style="form"
+     *  ),
+     * @OA\Parameter(
+     *      name="description",
+     *      in="query",
+     *      description="Write the description",
      *      required=false,
      *      @OA\Schema(
      *          type="string",
@@ -750,18 +652,18 @@ class PointController extends Controller
      *      ),
      *      style="form"
      *  ),
-	 * 	@OA\Response(
-     *		response=200,
-     *		description="Search points",
+     * 	@OA\Response(
+     *        response=200,
+     *        description="Search redeemable products",
      *		@OA\JsonContent(
-     *		    ref="#/components/schemas/PointSchema",
+     *            ref="#/components/schemas/RedeemableProductSchema",
      *           example={"response": {
      *              "data":{
      *                 "id": 1,
-     *                 "key": "3caff61cb19d855503fe",
+     *                 "sku": "123572363",
      *                 "value": "1000.00",
-     *                 "message": "Puntos promocionales exclusivos de...",
-     *                 "max_uses": "5",
+     *                 "name": "Piclor",
+     *                 "description": "Pre-Registro",
      *                 "note": "Pre-Registro",
      *                 "is_active": "1",
      *                 "is_deleted": "0",
@@ -774,15 +676,15 @@ class PointController extends Controller
      *               "per_page": 15,
      *               "to": 1,
      *               "total": 1,
-     *               "first_page_url": "/api/points/search?page=1",
-     *               "last_page_url": "/api/points/search?page=1",
-     *               "path": "/api/points/search",
+     *               "first_page_url": "/api/redeemable/products/search?page=1",
+     *               "last_page_url": "/api/redeemable/products/search?page=1",
+     *               "path": "/api/redeemable/products/search",
      *               "prev_page_url": null,
      *               "next_page_url": null,
      *             }
      *          }
-     *		)
-     *	),
+     *        )
+     *    ),
      *	@OA\Response(
      *       response="default",
      *       description="Error: 'Resource not found.",
@@ -800,32 +702,36 @@ class PointController extends Controller
      *         description="Resources not found"
      *  ),
      *   security={ {"bearerAuth": {} } }
-	 * )
-	 */
-    public function search( Request $request ) : object
+     * )
+     */
+    public function search(Request $request): object
     {
-        $this->validate( $request, [
-            'key' => 'nullable|string|max:120',
+        $this->validate($request, [
+            'sku' => 'nullable|string|max:120',
             'value' => 'nullable|numeric',
-            'max_uses' => 'nullable|numeric',
+            'name' => 'nullable|string',
+            'description' => 'nullable|string',
             'pagination' => 'nullable|number'
-        ] );
+        ]);
 
-        $points = Point::where( 'is_active', true )->where( 'is_deleted', false );
-        if ( $request->key ) {
-            $points->where( 'key', 'LIKE', "%{$request->key}%" );
+        $points = RedeemableProduct::where('is_active', true)->where('is_deleted', false);
+        if ($request->sku) {
+            $points->where('sku', 'LIKE', "%{$request->sku}%");
         }
-        if ( $request->value ) {
-            $points->where( 'value', $request->value );
+        if ($request->value) {
+            $points->where('value', $request->value);
         }
-        if ( $request->max_uses ) {
-            $points->where( 'max_uses', $request->max_uses );
+        if ($request->name) {
+            $points->where('name', 'LIKE', "%{$request->name}%");
         }
-        if ( $request->paginate ) {
-            return $points->orderBy( 'value', 'DESC' )->paginate( $request->paginate );
+        if ($request->description) {
+            $points->where('description', 'LIKE', "%{$request->description}%");
+        }
+        if ($request->paginate) {
+            return $points->orderBy('value', 'DESC')->paginate($request->paginate);
         }
 
-        return $points->orderBy( 'value', 'DESC' )->get(  );
+        return $points->orderBy('name', 'ASC')->get();
     }
 
 }

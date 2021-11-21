@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\UserCode;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
-use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
@@ -220,8 +220,8 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return object
      */
     /**
      * @OA\POST(
@@ -313,9 +313,9 @@ class UserController extends Controller
      *      name="birthday",
      *      in="query",
      *      description="Write your birthday",
-     *      required=true,
+     *      required=false,
      *      @OA\Schema(
-     *          type="date",
+     *          type="string",
      *      ),
      *      style="form"
      *  ),
@@ -475,8 +475,7 @@ class UserController extends Controller
      *  @OA\Response(
      *         response=409,
      *         description="Registration Failed"
-     *  ),
-     *  security={ {"bearerAuth": {} } }
+     *  )
      * )
      */
     public function store( Request $request )
@@ -490,7 +489,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:100|unique:users',
             'phone' => 'required|string|between:7,14',
             'gender' => 'required|numeric',
-            //'partner_number' => 'required|string|max:50',
+            'partner_number' => 'required|string|max:120',
             'company_name' => 'required|string|between:3,60',
             'birthday' => 'nullable|string',
             'country' => 'nullable|string|max:50',
@@ -504,10 +503,27 @@ class UserController extends Controller
             'password' => 'required|string|confirmed|min:6',
         ] );
         $current_time = new \DateTime(  );
+        $check_partner_code = User::where( 'partner_number', $request->input( 'partner_number' ) )->get(  );
+        $user_codes = UserCode::where( 'key', $request->input( 'partner_number' ) )->first(  );
+        if ( $user_codes ) {
+            if ( count( $check_partner_code ) >= $user_codes->max_uses ) {
+                return response()->json( [
+                    'success' => false,
+                    'message' => "El código de verificación excede la cantidad de usos maximos ($user_codes->max_uses)"
+                ] );
+            }
+        } else {
+            return response()->json( [
+                'success' => false,
+                'message' => "El código de verificación ingresado no existe."
+            ] );
+        }
+
         try {
             //
             $in_data = User::create( [
                 'company_id' => $request->input( 'company_id' ),
+                'partner_number' => $request->input( 'partner_number' ),
                 'first_name' => $request->input( 'first_name' ),
                 'last_name' => $request->input( 'last_name' ),
                 'username' => $request->input( 'username' ),

@@ -1,5 +1,5 @@
 <?php
-
+namespace App;
 // Libs
 use Illuminate\Support\Str;
 use function Aws\filter;
@@ -26,11 +26,13 @@ function read_file( $bucket, $keyname ) {
 }
 
 // Random String
-function random_string( $size ) {
-    $bytes = random_bytes( $size / 2 );
-    return bin2hex( $bytes );
+if (!function_exists('random_string')) {
+    function random_string(int $size): string
+    {
+        $bytes = random_bytes($size / 2);
+        return bin2hex($bytes);
+    }
 }
-
 
 if (!function_exists('urlGenerator')) {
     /**

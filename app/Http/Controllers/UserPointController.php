@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Point;
 use App\Order;
 use App\UserPoint;
+use App\RedeemableProduct;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
-use App\Http\Controllers\Controller;
 
 class UserPointController extends Controller
 {
@@ -26,8 +26,8 @@ class UserPointController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return object
      */
     /**
      * @OA\POST(
@@ -117,7 +117,7 @@ class UserPointController extends Controller
      *  security={ {"bearerAuth": {} } }
      * )
      */
-    public function store( Request $request )
+    public function store( Request $request ) : object
     {
         // Validate incoming request
         $this->validate( $request, [
@@ -125,7 +125,7 @@ class UserPointController extends Controller
             'point_key' => 'required|string|max:150',
             'note' => 'nullable|string|max:250'
         ] );
-        $point = Point::where( 'is_active', true )->where( 'is_deleted', false )->where( 'key', $request->point_key )->first(  );
+        $point = Point::with('redeemable_product')->where( 'is_active', true )->where( 'is_deleted', false )->where( 'key', $request->point_key )->first(  );
         if ( !$point ) {
             return response(  )->json( [ 'message' => 'Código no encontrado, favor verificar que sea un código valido e intente nuevamente.' ], 404 );
         }
@@ -134,8 +134,8 @@ class UserPointController extends Controller
             return response(  )->json( [ 'message' => 'El código ya ha sido canjeado '.$point->max_uses.' veces, intente con otro código.' ], 404 );
         }
         if (  count( $check_points ) > 0 ) {
-            foreach ( $check_points as $key => $value ) {
-                if ( $value->user_id == $request->user_id ) {
+            foreach ( $check_points as $value ) {
+                if ( (int) $value->user_id === (int) $request->user_id ) {
                     return response(  )->json( [ 'message' => 'Ud ya ha canjeado este código' ], 404 );
                 }
             }
@@ -173,8 +173,8 @@ class UserPointController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\UserPoint  $user_point
-     * @return \Illuminate\Http\Response
+     * @param int $user_id
+     * @return object
      */
     /**
 	 * @OA\GET(
@@ -233,22 +233,16 @@ class UserPointController extends Controller
      *   security={ {"bearerAuth": {} } }
 	 * )
 	 */
-    public function show( $user_id, Request $request )
+    public function show( int $user_id ) : object
     {
-        //
-        $data = UserPoint::with( [ 'user', 'point' ] )->where( 'is_active', true )->where( 'is_deleted', false )->where( 'user_id', $user_id )->get(  );
-
-		if ( $request->wantsJson(  ) ) {
-			return $data;
-            //return $data->toJson(  );
-		}
+        return UserPoint::with( [ 'user', 'point.redeemable_product' ] )->where( 'is_active', true )->where( 'is_deleted', false )->where( 'user_id', $user_id )->get(  );
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\UserPoint  $user_point
-     * @return \Illuminate\Http\Response
+     * @param int $user_id
+     * @return object
      */
     /**
 	 * @OA\GET(
@@ -302,34 +296,31 @@ class UserPointController extends Controller
      *   security={ {"bearerAuth": {} } }
 	 * )
 	 */
-    public function count_points( $user_id, Request $request )
+    public function count_points( int $user_id ) : array
     {
-        //
-        $data_points = UserPoint::with( 'point' )->where( 'is_active', true )->where( 'is_deleted', false )->where( 'user_id', $user_id )->get(  );
+        $data_points = UserPoint::with( 'point.redeemable_product' )->where( 'is_active', true )->where( 'is_deleted', false )->where( 'user_id', $user_id )->get(  );
         $data_orders = Order::with( 'details.inventory_price' )->where( 'state', 'done' )->where( 'is_deleted', false )->where( 'client_id', $user_id )->get(  );
         $points = $data_points->sum( 'point.value' );
         $orders = 0;
         if ( count( $data_orders ) > 0 ) {
-            foreach ( $data_orders as $key => $value) {
+            foreach ( $data_orders as $value) {
                 $orders += ( count( $value->details ) > 0 ) ? ( $value->details->sum( 'real_price' ) * $value->details->sum( 'quantity' ) ) : 0;
             }
-
         }
-		if ( $request->wantsJson(  ) ) {
-			return [
-                "points" => $points,
-                "orders" => $orders,
-                "total" => $points - $orders,
-            ];
-            //return $data->toJson(  );
-		}
+
+        return [
+            "points" => $points,
+            "orders" => $orders,
+            "total" => $points - $orders,
+        ];
+        //return $data->toJson(  );
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\UserPoint  $user_point
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return object
      */
     /**
 	 * @OA\DELETE(
@@ -388,17 +379,13 @@ class UserPointController extends Controller
      *   security={ {"bearerAuth": {} } }
 	 * )
 	 */
-    public function destroy( Request $request, $id )
+    public function destroy( int $id ) : object
     {
-        //
-        $data = UserPoint::with( [ 'user', 'point' ] )->findOrFail( $id );
+        $data = UserPoint::with( [ 'user', 'point.redeemable_product' ] )->findOrFail( $id );
         $data->is_deleted = true;
         $data->save(  );
 
-        if ( $request->wantsJson(  ) ) {
-            return $data;
-            //return $data->toJson(  );
-        }
+        return $data;
     }
 
 }
