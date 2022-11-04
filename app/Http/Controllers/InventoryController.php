@@ -128,7 +128,7 @@ class InventoryController extends Controller
     public function index( Request $request )
     {
         //
-        $data = Inventory::with( [ 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false )->get(  );
+        $data = Inventory::with( [ 'category', 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false )->get(  );
         //foreach( $data as $item ) {
             //$item->setImages(  );
             //$item->image = url( '/img/inventories/'.$item->image );
@@ -255,7 +255,7 @@ class InventoryController extends Controller
     public function list( Request $request )
     {
         //
-        $data = Inventory::with( [ 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false )->paginate( 15 );
+        $data = Inventory::with( [ 'category', 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false )->paginate( 15 );
 
 		if ( $request->wantsJson(  ) ) {
 			return $data;
@@ -727,7 +727,7 @@ class InventoryController extends Controller
     public function show( $id, Request $request )
     {
         //
-        $data = Inventory::with( [ 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false )->where( 'id', $id )->firstOrFail(  );
+        $data = Inventory::with( [ 'category', 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false )->where( 'id', $id )->firstOrFail(  );
 
 		if ( $request->wantsJson(  ) ) {
 			return $data;
@@ -1032,7 +1032,7 @@ class InventoryController extends Controller
     public function update( $id, Request $request )
     {
         //
-        $data = Inventory::with( [ 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'id', $id )->firstOrFail(  );
+        $data = Inventory::with( [ 'category', 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'id', $id )->firstOrFail(  );
         // Validate incoming request
         $this->validate( $request, [
             'product_id' => 'required|numeric',
@@ -1228,7 +1228,7 @@ class InventoryController extends Controller
     public function destroy( Request $request, $id )
     {
         //
-        $data = Inventory::with( [ 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->findOrFail( $id );
+        $data = Inventory::with( [ 'category', 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->findOrFail( $id );
         $data->is_deleted = true;
         $data->save(  );
 
@@ -1416,7 +1416,7 @@ class InventoryController extends Controller
             'pagination' => 'nullable|number'
         ] );
 
-        $inventories = Inventory::with( [ 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false );
+        $inventories = Inventory::with( [ 'category', 'product.category', 'point', 'company', 'prices', 'images', 'tags' ] )->where( 'is_active', true )->where( 'is_deleted', false );
         if ( $request->name ) {
             $inventories->where( 'name', 'LIKE', "%{$request->name}%" )->orWhere( 'company_name', 'LIKE', "%{$request->name}%" );
         }

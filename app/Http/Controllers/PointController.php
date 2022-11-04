@@ -90,7 +90,7 @@ class PointController extends Controller
      *  security={ {"bearerAuth": {} } }
      * )
      */
-    public function pdf_generator( string $sku, int $value, int $quantity = 1 ) {
+    public function pdf_generator( string $sku, ?int $value, int $quantity = 1 ) {
         $product = RedeemableProduct::where( 'sku', $sku )->firstOrFail();
         $items = array(  );
         $current_time = new \DateTime(  );
@@ -99,7 +99,7 @@ class PointController extends Controller
                'key' => $this->random_string( 20 ),
                'sku' => $sku,
                'max_uses' => 1,
-               'value' => $value,
+               'value' => $value ?? $product->value,
                'message' => "Puntos promocionales exclusivos",
                'note' => "Generador de QRs",
                'is_active' => true,
@@ -231,12 +231,12 @@ class PointController extends Controller
      *  security={ {"bearerAuth": {} } }
 	 * )
 	 */
-    public function list( int $user_id ) : object
+    public function list(int $user_id ) : object
     {
-        return Point::with( 'users' )->where( 'is_active', true )->where( 'is_deleted', false )
-        ->whereHas( 'users', function( $query ) use ( $user_id ) {
-            return $query->where( 'user_id', $user_id );
-        } )->paginate( 15 );
+        return Point::with('users' )->where('is_active', true )->where('is_deleted', false )
+            ->whereHas('users', function($query ) use ($user_id ) {
+                return $query->where('user_id', $user_id );
+            } )->paginate(15 );
     }
 
     /**
@@ -343,7 +343,7 @@ class PointController extends Controller
      *  security={ {"bearerAuth": {} } }
      * )
      */
-    public function store( Request $request ) : object
+    public function store(Request $request) : object
     {
         // Validate incoming request
         $this->validate( $request, [

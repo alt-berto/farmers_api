@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call( TagSeeder::class );
         $this->call( InventoryTagSeeder::class );
         $this->call( InventoryImageSeeder::class );
+        $this->call( RedeemableProductSeeder::class );
     }
 }

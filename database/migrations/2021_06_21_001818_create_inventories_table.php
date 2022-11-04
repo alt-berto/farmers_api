@@ -15,7 +15,8 @@ class CreateInventoriesTable extends Migration
     {
         Schema::create('inventories', function (Blueprint $table) {
             $table->bigIncrements( 'id' );
-            $table->unsignedBigInteger( 'product_id' )->nullable( $value = false );
+            $table->unsignedBigInteger( 'category_id' )->nullable(  );
+            $table->unsignedBigInteger( 'product_id' )->nullable(  );
             $table->unsignedBigInteger( 'point_id' )->nullable(  );
             $table->unsignedBigInteger( 'company_id' )->nullable(  );
             $table->string( 'name' )->nullable(  );
@@ -26,14 +27,15 @@ class CreateInventoriesTable extends Migration
             $table->string( 'classification' )->nullable(  );
             $table->string( 'code' )->nullable(  );
             $table->string( 'unit_measurement' )->nullable(  );
-            $table->integer( 'qmin' )->nullable( $value = false );
-            $table->integer( 'qmax' )->nullable( $value = false );
-            $table->integer( 'existence' )->nullable( $value = false );
-            $table->integer( 'availability' )->nullable( $value = false );
+            $table->integer( 'qmin' )->nullable(  );
+            $table->integer( 'qmax' )->nullable(  );
+            $table->integer( 'existence' )->nullable(  );
+            $table->integer( 'availability' )->nullable(  );
             $table->string( 'note' )->nullable(  );
             $table->boolean( 'is_active' )->default( true );
             $table->boolean( 'is_deleted' )->default( false );
             $table->timestamps(  );
+            $table->foreign( 'category_id' )->references( 'id' )->on( 'categories' );
             $table->foreign( 'product_id' )->references( 'id' )->on( 'products' );
             $table->foreign( 'point_id' )->references( 'id' )->on( 'points' );
             $table->foreign( 'company_id' )->references( 'id' )->on( 'companies' );
