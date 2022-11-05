@@ -207,7 +207,7 @@ class UserCodeController extends Controller
     {
         // Validate incoming request
         $this->validate( $request, [
-            'key' => 'nullable|string|unique:user_codes',
+            'key' => 'required|string|unique:user_codes',
             'max_uses' => 'nullable|numeric',
             'note' => 'nullable|string|max:250'
         ] );
@@ -216,6 +216,7 @@ class UserCodeController extends Controller
             //
             $in_data = UserCode::create( [
                 'key' => $request->input( 'key' ),
+                'max_uses' => $request->input( 'max_uses' ) ?? 1,
                 'note' => $request->input( 'note' ),
                 'is_active' => true,
                 'created' => $current_time->format( "Y-m-d H:i:s" ),
