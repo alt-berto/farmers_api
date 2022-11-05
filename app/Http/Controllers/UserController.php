@@ -503,9 +503,9 @@ class UserController extends Controller
             'password' => 'required|string|confirmed|min:6',
         ] );
         $current_time = new \DateTime();
-        $user_code = UserCode::where('key', $request->input('partner_number'))->first();
+        $user_code = UserCode::where('key', $request->input('partner_number'))->orderBy('id', 'DESC')->first();
         $check_partner_code = User::where('partner_number', $user_code->id)->get();
-        if ( $user_code ) {
+        if  ($user_code) {
             if (count($check_partner_code) >= $user_code->max_uses) {
                 return response()->json( [
                     'success' => false,
@@ -523,7 +523,7 @@ class UserController extends Controller
             //
             $in_data = User::create( [
                 'company_id' => $request->input( 'company_id' ),
-                'partner_number' => $user_code->id,
+                'partner_number' => (int)$user_code->id,
                 'first_name' => $request->input( 'first_name' ),
                 'last_name' => $request->input( 'last_name' ),
                 'username' => $request->input( 'username' ),
