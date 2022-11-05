@@ -503,20 +503,20 @@ class UserController extends Controller
             'password' => 'required|string|confirmed|min:6',
         ] );
         $current_time = new \DateTime();
-        $user_code = UserCode::where('key', $request->input( 'partner_number' ) )->first(  );
-        $check_partner_code = User::where( 'partner_number', $user_code->id )->get(  );
+        $user_code = UserCode::where('key', $request->input('partner_number'))->first();
+        $check_partner_code = User::where('partner_number', $user_code->id)->get();
         if ( $user_code ) {
             if (count($check_partner_code) >= $user_code->max_uses) {
                 return response()->json( [
                     'success' => false,
                     'message' => "El código de verificación excede la cantidad de usos maximos ($user_code->max_uses)"
-                ] );
+                ], 404 );
             }
         } else {
             return response()->json( [
                 'success' => false,
                 'message' => "El código de verificación ingresado no existe."
-            ] );
+            ], 404);
         }
 
         try {
