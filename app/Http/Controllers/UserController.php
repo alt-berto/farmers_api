@@ -515,7 +515,7 @@ class UserController extends Controller
         } else {
             return response()->json( [
                 'success' => false,
-                'message' => "El código de verificación ingresado no existe."
+                'message' => "El código de verificación ingresado no existe, favor verifique que este correctamente."
             ], 404);
         }
 
