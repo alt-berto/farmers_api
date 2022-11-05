@@ -502,14 +502,14 @@ class UserController extends Controller
             'image' => 'nullable|string',
             'password' => 'required|string|confirmed|min:6',
         ] );
-        $current_time = new \DateTime(  );
-        $check_partner_code = User::where( 'partner_number', $request->input( 'partner_number' ) )->get(  );
-        $user_codes = UserCode::where( 'key', $request->input( 'partner_number' ) )->first(  );
-        if ( $user_codes ) {
-            if ( count( $check_partner_code ) >= $user_codes->max_uses ) {
+        $current_time = new \DateTime();
+        $user_code = UserCode::where('key', $request->input( 'partner_number' ) )->first(  );
+        $check_partner_code = User::where( 'partner_number', $user_code->id )->get(  );
+        if ( $user_code ) {
+            if (count($check_partner_code) >= $user_code->max_uses) {
                 return response()->json( [
                     'success' => false,
-                    'message' => "El código de verificación excede la cantidad de usos maximos ($user_codes->max_uses)"
+                    'message' => "El código de verificación excede la cantidad de usos maximos ($user_code->max_uses)"
                 ] );
             }
         } else {
@@ -523,7 +523,7 @@ class UserController extends Controller
             //
             $in_data = User::create( [
                 'company_id' => $request->input( 'company_id' ),
-                'partner_number' => $request->input( 'partner_number' ),
+                'partner_number' => $user_code->id,
                 'first_name' => $request->input( 'first_name' ),
                 'last_name' => $request->input( 'last_name' ),
                 'username' => $request->input( 'username' ),
