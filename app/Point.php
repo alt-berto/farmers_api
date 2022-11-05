@@ -53,7 +53,7 @@ use Illuminate\Database\Eloquent\Model;
  *   	property="modified_at", description="Modified",
  *      @OA\Schema(type="datetime", example="1990-01-01 00:00:00")
  *	)
- * )
+ *)
  */
 class Point extends Model
 {
@@ -84,19 +84,19 @@ class Point extends Model
      *
      * @var array
      */
-    protected $hidden = [  ];
+    protected $hidden = [];
 
-    public function redeemable_product(  )
+    public function redeemable_product()
     {
-        return $this->belongsTo( RedeemableProduct::class, 'sku', 'sku ' );
+        return $this->belongsTo(RedeemableProduct::class, 'sku', 'sku');
     }
-    public function products(  )
+    public function products()
     {
-        return $this->hasMany( Inventory::class, 'point_id', 'id' );
+        return $this->hasMany(Inventory::class, 'point_id', 'id');
     }
 
-    public function users(  )
+    public function users()
     {
-        return $this->hasMany( UserPoint::class, 'point_id', 'id' );
+        return $this->hasMany(UserPoint::class, 'point_id', 'id');
     }
 }
