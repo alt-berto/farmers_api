@@ -2,12 +2,14 @@
 
 namespace App\Traits;
 
+use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 
 trait SendsPasswordResetEmails
 {
+    use ApiResponser;
     /**
      * Display the form to request a password reset link.
      *
@@ -72,7 +74,7 @@ trait SendsPasswordResetEmails
      */
     protected function sendResetLinkResponse(Request $request, $response)
     {
-        return redirect()->back()->with('status', trans($response));
+        return response()->json(['status', trans($response)]);
     }
 
     /**
@@ -84,9 +86,11 @@ trait SendsPasswordResetEmails
      */
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
-        return redirect()->back()
-            ->withInput($request->only('email'))
-            ->withErrors(['email' => trans($response)]);
+        return response()->json([
+            'success' => false,
+            $request->only('email'),
+            'email' => trans($response)
+        ], 409);
     }
 
     /**

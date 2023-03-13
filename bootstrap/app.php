@@ -23,14 +23,13 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-$app->withFacades();
-
 class_alias('Illuminate\Support\Facades\App', 'App');
 class_alias(Tymon\JWTAuth\Facades\JWTAuth::class, 'JWTAuth');
 class_alias(Maatwebsite\Excel\Facades\Excel::class, 'Excel');
 class_alias(SimpleSoftwareIO\QrCode\Facades\QrCode::class, 'QrCode');
 class_alias(Aws\Laravel\AwsFacade::class, 'AWS');
 
+$app->withFacades();
 $app->withEloquent();
 
 $app->configure('swagger-lume');
