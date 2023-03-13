@@ -36,6 +36,15 @@ $app->withEloquent();
 $app->configure('swagger-lume');
 $app->configure('dompdf');
 $app->configure('mail');
+$app->configure('services');
+
+//
+$app->alias('mail.manager', Illuminate\Mail\MailManager::class);
+$app->alias('mail.manager', Illuminate\Contracts\Mail\Factory::class);
+
+$app->alias('mailer', Illuminate\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\MailQueue::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -117,6 +126,8 @@ $app->register('Nord\Lumen\Cors\CorsServiceProvider');
 $app->register(SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class);
 $app->register(Aws\Laravel\AwsServiceProvider::class);
 $app->register(Illuminate\Mail\MailServiceProvider::class);
+$app->register(Illuminate\Auth\Passwords\PasswordResetServiceProvider::class);
+$app->register(Illuminate\Notifications\NotificationServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

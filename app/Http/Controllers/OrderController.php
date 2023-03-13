@@ -814,7 +814,6 @@ class OrderController extends Controller
      */
     public function update( $id, Request $request )
     {
-        //
         $data = Order::with( 'details.inventory_price.inventory' )->where( 'id', $id )->firstOrFail(  );
         // Validate incoming request
         $this->validate( $request, [
@@ -822,8 +821,12 @@ class OrderController extends Controller
             'state' => 'required|string|max:50',
             'note' => 'nullable|string|max:250'
         ] );
-        if ( $request->state == 'done' ) {
-            $data_points = UserPoint::with( 'point' )->where( 'is_active', true )->where( 'is_deleted', false )->where( 'user_id', $request->client_id )->get(  );
+        if ($request->state == 'done') {
+            $data_points = UserPoint::with('point')
+                ->where('is_active', true)
+                ->where('is_deleted', false)
+                ->where('user_id', $request->client_id)
+                ->get();
             $data_orders = Order::with( 'details.inventory_price' )->where( 'state', 'done' )->where( 'is_deleted', false )->where( 'client_id', $request->client_id )->get(  );
             $points = $data_points->sum( 'point.value' );
             $orders = 0;

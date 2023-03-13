@@ -2,6 +2,9 @@
 
 namespace App;
 
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -124,9 +127,10 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  *	)
  * )
  */
-class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject
+class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject, CanResetPasswordContract
 {
     use Authenticatable, Authorizable;
+    use Notifiable, CanResetPassword;
 
     const ADMIN_TYPE = 1;
     const DEFAULT_TYPE = 0;
@@ -193,6 +197,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $hidden = [
         'password',
+        'remember_token'
     ];
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

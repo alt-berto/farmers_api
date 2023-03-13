@@ -17,6 +17,8 @@ $router->get('/', function () use ($router) {
 /*--- Access Begin ---*/
 $router->post( '/api/register', 'AuthController@register');
 $router->post( '/api/login', 'AuthController@login' );
+$router->post('/api/password/reset-request', 'RequestPasswordController@sendResetLinkEmail');
+$router->post('/api/password/reset', [ 'as' => 'password.reset', 'uses' => 'ResetPasswordController@reset' ]);
 /*--- Access End ---*/
 //
 $router->group( [ 'middleware' => 'jwt', 'prefix' => 'api' ], function(  ) use ( $router ) {
