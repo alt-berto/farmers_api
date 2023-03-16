@@ -239,7 +239,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
         Mail::send('mails.reset-password', [
             'fullname'      => $this->first_name . ' ' . $this->last_name,
-            'reset_url'     => env('CLIENT_URL') . '/restablecer-password?token' . $token . '&email' . $this->email,
+            'reset_url'     => env('CLIENT_URL') . '/restablecer-password?token=' . $token . '&email=' . $this->email,
         ], function($message) use($data){
             $message->subject('Solicitud para restableces contraseña');
             $message->to($data[0]);
