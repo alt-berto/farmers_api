@@ -35,7 +35,8 @@ class Controller extends BaseController
                 'to_name' => ($user->first_name . ' ' . $user->last_name),
                 'copies' => [
                     'ing.molinanestor@gmail.com',
-                    //'aurora.matamoros@upl-ltd.com'
+                    //'aurora.matamoros@upl-ltd.com',
+                    //'servicioalcliente@upl-farmers.com',
                 ]
             ];
 
