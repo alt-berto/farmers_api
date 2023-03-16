@@ -22,7 +22,7 @@ class Controller extends BaseController
 {
     //
 
-    protected function invitation_mail(int $order_id): bool {
+    protected function invitation_mail(int $order_id): string {
         $order = Order::with(['details.inventory_price.inventory.product'])->where('is_active', 1)->where('id', $order_id)->firstOrFail();
         $user = User::where('client_id', $order->client_id)->firstOrFail();
 
@@ -45,12 +45,9 @@ class Controller extends BaseController
                 $message->to($parameters['to'], $parameters['to_name'])->subject($parameters['subject']);
                 $message->from(env('MAIL_FROM_CONTACT'), 'UPL FARMERS');
             });
-            return true;
+            return 'send';
         } catch ( \Exception $e ) {
-
+            return $e->getMessage();
         }
-
-
-        return false;
     }
 }
