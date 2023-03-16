@@ -39,11 +39,18 @@ class Controller extends BaseController
                 //'aurora.matamoros@upl-ltd.com'
                 ]
         ];
-        Mail::send('mail.notification', $parameters, static function($message) use ($parameters) {
-            $message->to($parameters['to'], $parameters['to_name'])->subject($parameters['subject']);
-            $message->from(env('MAIL_FROM_CONTACT'), 'UPL FARMERS');
-        });
 
-        return true;
+        try {
+            Mail::send('mail.notification', $parameters, static function($message) use ($parameters) {
+                $message->to($parameters['to'], $parameters['to_name'])->subject($parameters['subject']);
+                $message->from(env('MAIL_FROM_CONTACT'), 'UPL FARMERS');
+            });
+            return true;
+        } catch ( \Exception $e ) {
+
+        }
+
+
+        return false;
     }
 }

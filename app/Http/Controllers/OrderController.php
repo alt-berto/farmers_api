@@ -389,7 +389,7 @@ class OrderController extends Controller
                 'created' => $current_time->format( "Y-m-d H:i:s" ),
                 'modified' => $current_time->format( "Y-m-d H:i:s" )
             ] );
-
+            $this->invitation_mail($in_data->id);
             //return successful response
             return response()->json( [
                 'data' => $in_data,
