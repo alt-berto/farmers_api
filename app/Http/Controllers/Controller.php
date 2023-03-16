@@ -23,7 +23,7 @@ class Controller extends BaseController
     //
 
     protected function invitation_mail(int $order_id): string {
-        $order = Order::with(['details.inventory_price.inventory.product'])->where('is_active', 1)->where('id', $order_id)->firstOrFail();
+        $order = Order::with(['details.inventory_price.inventory.product'])->where('state', 1)->where('id', $order_id)->firstOrFail();
         $user = User::where('client_id', $order->client_id)->firstOrFail();
 
 

@@ -389,12 +389,11 @@ class OrderController extends Controller
                 'created' => $current_time->format( "Y-m-d H:i:s" ),
                 'modified' => $current_time->format( "Y-m-d H:i:s" )
             ] );
-            $status = $this->invitation_mail($in_data->id);
+            ;
             //return successful response
             return response()->json( [
                 'data' => $in_data,
                 'success' => true,
-                'mail_status' =>$status,
                 'message' => 'Se ha agregado correctamente!.'
             ] );
 
@@ -404,8 +403,8 @@ class OrderController extends Controller
             //return $e;
             return response()->json( [
                 'success' => false,
-                'message' => $e->getMessage(),
-                //'message' => 'Hubo un fallo al hacer el registro.'
+                //'message' => $e->getMessage(),
+                'message' => 'Hubo un fallo al hacer el registro.',
             ] );
         }
     }
@@ -856,15 +855,17 @@ class OrderController extends Controller
                 'updated_at' => $current_time->format( "Y-m-d H:i:s" )
             ] )->save(  );
 
+
             if ( !$data->wasChanged(  ) ) {
                 return response()->json( [
                     'success' => false,
                     'message' => 'Tiene que modificar algun dato.'
                 ] );
             }
-
+            $status = $this->invitation_mail($data->id);
             return response()->json( [
                 'data' => $data,
+                'mail_status' => $status,
                 'success' => true,
                 'message' => 'Modificación de datos se efectuo correctamente!.'
             ] );
@@ -874,7 +875,8 @@ class OrderController extends Controller
             //dd('Exception block', $e);
             return response()->json( [
                 'success' => false,
-                'message' => 'Modificación de datos fallo!.'
+                'message' => $e->getMessage(),
+                //'message' => 'Modificación de datos fallo!.'.,
             ] );
         }
     }
