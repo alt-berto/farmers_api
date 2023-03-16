@@ -74,7 +74,10 @@ trait SendsPasswordResetEmails
      */
     protected function sendResetLinkResponse(Request $request, $response)
     {
-        return response()->json(['status', trans($response)]);
+        return response()->json([
+            'success' => true,
+            'response' => trans($response)
+        ]);
     }
 
     /**
@@ -89,7 +92,7 @@ trait SendsPasswordResetEmails
         return response()->json([
             'success' => false,
             $request->only('email'),
-            'email' => trans($response)
+            'response' => trans($response)
         ], 409);
     }
 
