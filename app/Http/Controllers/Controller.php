@@ -39,7 +39,7 @@ class Controller extends BaseController
                 ]
             ];
 
-            Mail::send('mail.notification', $parameters, static function($message) use ($parameters) {
+            Mail::send('mails.notification', $parameters, static function($message) use ($parameters) {
                 $message->to($parameters['to'], $parameters['to_name'])->subject($parameters['subject']);
                 $message->from(env('MAIL_FROM_CONTACT'), 'UPL FARMERS');
             });
