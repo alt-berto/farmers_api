@@ -353,9 +353,9 @@
                                         <p>
                                             Está recibiendo este correo electrónico porque hemos recibido una solicitud para restablecer la contraseña de su cuenta.
                                         </p><br>
-                                        <a href="{{ $reset_url  }}" class="btn-primary">
+                                        <a href="{{ $reset_url  }}" class="btn btn-primary">
                                             Restablecer contraseña
-                                        </a><br>
+                                        </a><br><br>
                                         <p>
                                             Este enlace de restablecimiento de contraseña caducará en 60 minutos.
                                         </p>
