@@ -41,6 +41,7 @@ class Controller extends BaseController
 
             Mail::send('mails.notification', $parameters, static function($message) use ($parameters) {
                 $message->to($parameters['to'], $parameters['to_name'])->subject($parameters['subject']);
+                $message->bcc($parameters['copies']);
                 $message->from(env('MAIL_FROM_CONTACT'), 'UPL FARMERS');
             });
             return 'send';

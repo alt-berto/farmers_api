@@ -11,6 +11,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * @OA\Schema(
@@ -227,5 +228,21 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function getAuthPassword(  )
     {
         return $this->password;
+    }
+
+    public function sendPasswordResetNotification($token){
+        // $this->notify(new MyCustomResetPasswordNotification($token)); <--- remove this, use Mail instead like below
+
+        $data = [
+            $this->email
+        ];
+
+        Mail::send('mails.reset-password', [
+            'fullname'      => $this->first_name . ' ' . $this->last_name,
+            'reset_url'     => env('CLIENT_URL') . '/restablecer-password?token' . $token . '&email' . $this->email,
+        ], function($message) use($data){
+            $message->subject('Solicitud para restableces contraseña');
+            $message->to($data[0]);
+        });
     }
 }

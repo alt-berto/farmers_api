@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Notificación de Canjeo</title>
+    <title>Notificación de Restablecimiento de Contraseña</title>
     <style>
         /* -------------------------------------
             GLOBAL RESETS
@@ -333,7 +333,7 @@
     </style>
 </head>
 <body>
-<span class="preheader">Notificación de Canjeo</span>
+<span class="preheader">Notificación de Restablecimiento de Contraseña</span>
 <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
     <tr>
         <td>&nbsp;</td>
@@ -349,48 +349,30 @@
                             <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td>
-                                        <p>Hola, {{ $user->first_name . ' ' . $user->last_name  }}.</p>
+                                        <p>Hola, {{ $fullname  }}.</p><br>
                                         <p>
-                                            Le notificamos que realizo un canjeo de productos nuestra app con los siguiente detalle:
+                                            Está recibiendo este correo electrónico porque hemos recibido una solicitud para restablecer la contraseña de su cuenta.
+                                        </p><br>
+                                        <a href="{{ $reset_url  }}" class="btn-primary">
+                                            Restablecer contraseña
+                                        </a><br>
+                                        <p>
+                                            Este enlace de restablecimiento de contraseña caducará en 60 minutos.
                                         </p>
+                                        <p>Si no ha solicitado un restablecimiento de contraseña, no es necesario realizar ninguna otra acción.</p><br/><br/>
                                         <p>
-                                            <ul>
-                                                <li>
-                                                    <b>Fecha:</b> {{ $order->updated_at }}
-                                                </li>
-                                                <li>
-                                                    <b>Datos de usuario:</b><br/>
-                                                    <ul>
-                                                        <li>
-                                                            <b>Nombre de usuario: </b> {{ $user->username }}
-                                                        </li>
-                                                        <li>
-                                                            <b>Nombres: </b> {{ $user->first_name }}
-                                                        </li>
-                                                        <li>
-                                                            <b>Apellidos: </b> {{ $user->last_name }}
-                                                        </li>
-                                                        <li>
-                                                            <b>Correo: </b> {{ $user->email }}
-                                                        </li>
-                                                        <li>
-                                                            <b>Teléfono: </b> {{ $user->phone }}
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                                <li>
-                                                    <b>Productos:</b><br/>
-                                                    <ul>
-                                                        @foreach($order->details as $item)
-                                                            <li>
-                                                                {{ $item->inventory_price->inventory->name . ' - Cantidad : ' . $item->quantity . ' - Precio: ' . $item->real_price . ' -- Total: ' . ($item->real_price * $item->quantity) }}
-                                                            </li>
-                                                        @endforeach
-                                                    </ul>
-                                                </li>
-                                            </ul>
+                                            Saludos cordiales. <br/>
+                                            UPL Farmers
                                         </p><br/>
-                                        <p>Lo estaremos contactando en las proximas horas para coordinar el proceso de entrega de los articulos canjeados.</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p>
+                                            Si tiene problemas para hacer clic en el botón "Restablecer contraseña", copie y pegue la siguiente URL en su navegador web:
+                                            <a href="{{ $reset_url  }}"> {{ $reset_url  }}</a>
+                                        </p>
                                     </td>
                                 </tr>
                             </table>
