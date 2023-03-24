@@ -586,13 +586,13 @@ class AuthController extends Controller
                 return response()->json( [
                     'success' => false,
                     'message' => "El código de verificación excede la cantidad de usos maximos ($user_codes->max_uses)"
-                ] );
+                ], 404 );
             }
         } else {
             return response()->json( [
                 'success' => false,
                 'message' => "El código de verificación ingresado no existe."
-            ] );
+            ] , 404);
         }
         try {
             $user = User::create( [
@@ -632,7 +632,7 @@ class AuthController extends Controller
             return response()->json( [
                 'success' => false,
                 'message' => 'Hubo un fallo al hacer el registro.'
-            ] );
+            ], 404 );
         }
     }
 

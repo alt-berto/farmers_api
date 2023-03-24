@@ -560,7 +560,7 @@ class UserController extends Controller
             return response()->json( [
                 'success' => false,
                 'message' => 'Hubo un fallo al hacer el registro.'
-            ] );
+            ], 404 );
         }
     }
 
