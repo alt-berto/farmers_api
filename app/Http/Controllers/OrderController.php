@@ -833,7 +833,7 @@ class OrderController extends Controller
             $orders = 0;
             if ( count( $data_orders ) > 0 ) {
                 foreach ( $data_orders as $key => $value) {
-                    $orders += ( count( $value->details ) > 0 ) ? ( $value->details->sum( 'real_price' ) * $value->details->sum( 'quantity' ) ) : 0;
+                    $orders += ( count( $value->details ) > 0 ) ? ( $value->details->sum( 'real_price' ) /** $value->details->sum( 'quantity' )*/ ) : 0;
                 }
 
             }
