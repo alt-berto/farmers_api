@@ -837,7 +837,7 @@ class OrderController extends Controller
                 }
 
             }
-            $total_order = ( count( $data->details ) > 0 ) ? ( $data->details->sum( 'real_price' ) * $data->details->sum( 'quantity' ) ) : 0;
+            $total_order = ( count( $data->details ) > 0 ) ? ( $data->details->sum( 'real_price' ) /** $data->details->sum( 'quantity' )*/ ) : 0;
             $total_points = $points - $orders;
             if ( $total_order > $total_points ) {
                 return response(  )->json( [ 'message' => 'No cuenta con los puntos necesarios ('.$total_order.') para efectuar la compra, favor canjea mas puntos para proseguir. Sus puntos actuales son: '.$total_points ], 404 );
