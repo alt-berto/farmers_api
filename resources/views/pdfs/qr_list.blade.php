@@ -8,31 +8,35 @@
             #container {
                 width: 100% !important;
                 height: 100% !important;
-                margin-top: 60px !important;
-                margin-left: 135px !important;
-            }
+
             body{
-                font-family: Arial, Helvetica, sans-serif;
+                font-size: 0;
+                /** font-family: Arial, Helvetica, sans-serif;**/
             }
-            .center{}
+            .center{
+                width: 100% !important;
+                height: 100% !important;
+                margin: 0 0 0 0;
+            }
         </style>
     <body>
         <div id="container">
             <div class="center">
                 @foreach( $items as $item )
-                    <img style="width: 440px"
+                    <img style="display: inline-block; vertical-align: middle; width: 80px; margin-bottom: 20px; font-size: 12px;"
                          alt="{{ $item->key . '-img'  }}"
                          src="data:image/png;base64,
                             {!!
                                 base64_encode(QrCode::format('png')
                                 ->errorCorrection('Q')
-                                ->size('440')
+                                ->size('80')
                                 ->margin(0)
                                 ->generate( $item->key ) )
                             !!}"
                     />
-                    <br/><br/><br/>
+                    
                 @endforeach
+                <p>.</p>
             </div>
         </div>
     </body>
