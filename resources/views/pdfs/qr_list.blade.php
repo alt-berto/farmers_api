@@ -28,13 +28,16 @@
                          src="data:image/png;base64,
                             {!!
                                 base64_encode(QrCode::format('png')
-                                ->errorCorrection('Q')
-                                ->size('80')
-                                ->margin(0)
+                                ->style('dot')
+                                ->eye('circle')
+                                ->margin(1)
+                                ->errorCorrection('M')
+                                ->size('180')
+                                ->merge('/storage/app/logo_con_fondo.png')
                                 ->generate( $item->key ) )
                             !!}"
                     />
-                    
+
                 @endforeach
                 <p>.</p>
             </div>

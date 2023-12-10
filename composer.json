@@ -20,7 +20,7 @@
         "nesbot/carbon": "^2.34",
         "nordsoftware/lumen-cors": "^3.3",
         "ramsey/uuid": "^4.2",
-        "simplesoftwareio/simple-qrcode": "^2.0",
+        "simplesoftwareio/simple-qrcode": "4.2",
         "symfony/serializer": "^5.1",
         "tishotm/eloquent-ci-relations": "^1.0",
         "tymon/jwt-auth": "dev-develop",

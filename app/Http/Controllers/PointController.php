@@ -91,6 +91,8 @@ class PointController extends Controller
      * )
      */
     public function pdf_generator( string $sku, ?int $value, int $quantity = 1 ) {
+        ini_set('memory_limit', '-1');
+        set_time_limit(0);
         $product = RedeemableProduct::where( 'sku', $sku )->firstOrFail();
         $items = array(  );
         $current_time = new \DateTime(  );

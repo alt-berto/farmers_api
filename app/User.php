@@ -165,6 +165,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'token',
         'is_admin',
         'password',
+        'remember_token',
         'note',
         'is_active',
         'is_deleted',
